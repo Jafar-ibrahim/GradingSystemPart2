@@ -53,24 +53,32 @@
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
+
+        /* Target the "Student Name" column */
+        th:nth-child(2), td:nth-child(2) {
+            width: 200px; /* Adjust width as needed */
+        }
     </style>
 </head>
 
 <body>
 <div class="container">
-    <h2>Section Grades</h2>
+    <h2>Section ${section_id} Grades</h2>
+    <h3>Course : ${course_name}</h3>
     <table>
         <thead>
         <tr>
             <th>Student ID</th>
+            <th>Student Name</th>
             <th>Grade</th>
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="grade" items="${sectionGrades}">
+        <c:forEach var="grade" items="${section_grades}">
             <tr>
-                <td>${grade.key}</td>
-                <td>${grade.value}</td>
+                <td>${grade.getStudentId()}</td>
+                <td>${grade.getStudentFullName()}</td>
+                <td>${grade.getGrade()}</td>
             </tr>
         </c:forEach>
         </tbody>

@@ -39,16 +39,6 @@ public class SectionService {
         }
     }
 
-    public String getSectionCourseName(int courseId){
-        try{
-            CourseDAO.checkCourseExists(courseId);
-            return sectionDAO.getCourseName(courseId);
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
-    }
     public Section getById(int sectionId){
         try {
             return sectionDAO.getById(sectionId);

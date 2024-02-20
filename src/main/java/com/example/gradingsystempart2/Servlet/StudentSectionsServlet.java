@@ -2,6 +2,7 @@ package com.example.gradingsystempart2.Servlet;
 
 import com.example.gradingsystempart2.Model.Grade;
 import com.example.gradingsystempart2.Model.Section;
+import com.example.gradingsystempart2.Model.Student;
 import com.example.gradingsystempart2.Model.UserDTO;
 import com.example.gradingsystempart2.Service.EnrollmentService;
 import com.example.gradingsystempart2.Service.GradeService;
@@ -24,8 +25,8 @@ public class StudentSectionsServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Assuming the studentId is passed as a parameter in the request
-        int studentId = 1/*Integer.parseInt(request.getParameter("student_id"))*/;
-        int userId = userService.getSpecificId(studentId,3);
+        int userId = 5/*Integer.parseInt(request.getParameter("student_id"))*/;
+        int studentId = userService.getSpecificId(userId,3);
         UserDTO userDTO = userService.getById(userId);
         String studentName = userDTO.getFirstName()+" "+userDTO.getLastName();
         // Call the service method to get the grade report

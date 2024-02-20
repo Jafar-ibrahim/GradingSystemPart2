@@ -76,5 +76,17 @@ public class CourseDAO {
             throw new CourseNotFoundException();
         }
     }
+    public String getCourseName(int courseId) throws SQLException {
+        String sql = "SELECT course_name FROM course WHERE course_id = ?";
+        try (Connection connection = database.getDatabaseConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, courseId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if(resultSet.next())
+                    return resultSet.getString("course_name");
+            }
+        }
+        return "N/A";
+    }
 
 }

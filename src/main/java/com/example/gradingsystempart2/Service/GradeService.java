@@ -99,8 +99,7 @@ public class GradeService {
 
 
 
-    public List<Pair<Integer,Double>> getSectionGrades(int sectionId) {
-        List<Map<String, Object>> gradesList;
+    public List<Grade> getSectionGrades(int sectionId) {
         try {
             return gradeDAO.getGradesBySectionId(sectionId);
         } catch (SQLException e) {

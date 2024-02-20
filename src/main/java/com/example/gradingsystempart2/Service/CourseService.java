@@ -35,4 +35,14 @@ public class CourseService {
             e.printStackTrace();
             return "Course deletion failed";   }
     }
+    public String getCourseName(int courseId){
+        try{
+            CourseDAO.checkCourseExists(courseId);
+            return courseDAO.getCourseName(courseId);
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

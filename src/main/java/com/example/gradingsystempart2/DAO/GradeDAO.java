@@ -101,12 +101,12 @@ public class GradeDAO {
         return 0.0;
     }
 
-    public List<Pair<Integer,Double>> getGradesBySectionId(int sectionId) throws SQLException {
+    public List<Grade> getGradesBySectionId(int sectionId) throws SQLException {
         String sql = "SELECT g.student_id, g.grade " +
                 "FROM grade g " +
                 "WHERE g.section_id = ?";
 
-        List<Pair<Integer,Double>> gradesList = new ArrayList<>();
+        List<Grade> gradesList = new ArrayList<>();
 
         try (Connection connection = database.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -117,7 +117,9 @@ public class GradeDAO {
                 while (resultSet.next()) {
                     int studentId = resultSet.getInt("student_id");
                     double grade = resultSet.getDouble("grade");
-                    gradesList.add(new Pair<>(studentId,grade));
+                    Section section = sectionDAO.getById(sectionId);
+                    String studentName = studentDAO.getStudentFullName(studentId);
+                    gradesList.add(new Grade(studentId,studentName,section,grade));
                 }
             }
         }

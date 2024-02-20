@@ -23,23 +23,12 @@ public class SectionDAO {
         try (Connection connection = database.getDatabaseConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, courseId);
-            preparedStatement.setString(2, getCourseName(courseId));
+            preparedStatement.setString(2, courseDAO.getCourseName(courseId));
             preparedStatement.executeUpdate();
         }
     }
 
-    public String getCourseName(int courseId) throws SQLException {
-        String sql = "SELECT course_name FROM course WHERE course_id = ?";
-        try (Connection connection = database.getDatabaseConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, courseId);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(resultSet.next())
-                    return resultSet.getString("course_name");
-            }
-        }
-        return "N/A";
-    }
+
     public void deleteSection(int sectionId) throws SQLException {
         String sql = "DELETE FROM section WHERE section_id = ?";
         try (Connection connection = database.getDatabaseConnection();

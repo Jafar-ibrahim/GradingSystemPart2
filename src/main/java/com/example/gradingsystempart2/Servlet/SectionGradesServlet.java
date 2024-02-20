@@ -1,6 +1,9 @@
 package com.example.gradingsystempart2.Servlet;
 
+import com.example.gradingsystempart2.Model.Grade;
+import com.example.gradingsystempart2.Model.Section;
 import com.example.gradingsystempart2.Service.GradeService;
+import com.example.gradingsystempart2.Service.SectionService;
 import javafx.util.Pair;
 
 import javax.servlet.RequestDispatcher;
@@ -14,16 +17,20 @@ import java.util.List;
 
 @WebServlet("/section_grades")
 public class SectionGradesServlet extends HttpServlet {
+    GradeService gradeService = new GradeService();
+    SectionService sectionService = new SectionService();
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Assuming the sectionId is passed as a parameter in the request
         int sectionId = Integer.parseInt(request.getParameter("section_id"));
-
+        Section section = sectionService.getById(sectionId);
+        String courseName = section.getCourse().getName();
         // Call the service method to get section grades
-        GradeService gradeService = new GradeService();
-        List<Pair<Integer, Double>> sectionGrades = gradeService.getSectionGrades(sectionId);
+        List<Grade> sectionGrades = gradeService.getSectionGrades(sectionId);
 
         // Set the sectionGrades as an attribute in the request
-        request.setAttribute("sectionGrades", sectionGrades);
+        request.setAttribute("section_id", sectionId);
+        request.setAttribute("section_grades", sectionGrades);
+        request.setAttribute("course_name", courseName);
 
         // Forward the request to the JSP
         RequestDispatcher dispatcher = request.getRequestDispatcher("views/displaySectionGrades.jsp");

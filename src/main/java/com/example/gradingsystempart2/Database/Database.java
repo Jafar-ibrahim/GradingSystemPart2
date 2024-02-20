@@ -162,7 +162,7 @@ public class Database {
         /*if (idToRead.length == 2)
             readSQL += " AND "+ columns.get(1) + "= ?";*/
         try {
-            return executeQuery(readSQL, (Object) idToRead);
+            return executeQuery(readSQL,idToRead);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
