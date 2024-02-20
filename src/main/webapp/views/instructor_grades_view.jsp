@@ -1,4 +1,5 @@
-
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -101,7 +102,7 @@
             <tr>
                 <td>${grade.getStudentId()}</td>
                 <td>${grade.getStudentFullName()}</td>
-                <td>${grade.getSection().getId()}</td>
+                <td>${grade.getGrade()}</td>
             </tr>
         </c:forEach>
         </tbody>

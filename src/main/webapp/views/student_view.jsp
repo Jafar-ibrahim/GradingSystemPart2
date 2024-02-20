@@ -106,6 +106,8 @@
         <p>View your courses grades , in addition to your and your sections average</p>
         <form action="${pageContext.request.contextPath}/gradeReport" method="GET">
             <input type="hidden" name="user_id" value="${user_id}">
+            <input type="hidden" name="user_dto" value="${user_dto}">
+            <input type="hidden" name="student_id" value="${student_id}">
             <input type="hidden" name="role" value="STUDENT">
             <button type="submit">View Grades</button>
         </form>
@@ -115,6 +117,8 @@
         <p>View the courses you are taking</p>
         <form action="${pageContext.request.contextPath}/studentSections" method="GET">
             <input type="hidden" name="user_id" value="${user_id}">
+            <input type="hidden" name="user_dto" value="${user_dto}">
+            <input type="hidden" name="student_id" value="${student_id}">
             <input type="hidden" name="role" value="STUDENT">
             <button type="submit">View Courses</button>
         </form>

@@ -90,9 +90,9 @@
 <body>
 <div class="container">
   <h1>Grading System - Login </h1>
-  <form action="/login" method="POST">
-    <label for="user_id">Username:</label>
-    <input id="user_id" name="user_id" type="text" required placeholder="Enter Username" />
+  <form action="/auth" method="POST">
+    <label for="username">Username:</label>
+    <input id="username" name="username" type="text" required placeholder="Enter Username" />
     <br>
     <label for="password">Password:</label>
     <input id="password" name="password" type="password" placeholder="Enter Password" required />

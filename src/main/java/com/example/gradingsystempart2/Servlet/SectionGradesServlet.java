@@ -1,10 +1,12 @@
 package com.example.gradingsystempart2.Servlet;
 
 import com.example.gradingsystempart2.Model.Grade;
+import com.example.gradingsystempart2.Model.Instructor;
 import com.example.gradingsystempart2.Model.Section;
 import com.example.gradingsystempart2.Service.EnrollmentService;
 import com.example.gradingsystempart2.Service.GradeService;
 import com.example.gradingsystempart2.Service.SectionService;
+import com.example.gradingsystempart2.Service.UserService;
 import javafx.util.Pair;
 
 import javax.servlet.RequestDispatcher;
@@ -21,9 +23,11 @@ public class SectionGradesServlet extends HttpServlet {
     GradeService gradeService = new GradeService();
     SectionService sectionService = new SectionService();
     EnrollmentService enrollmentService = new EnrollmentService();
+    UserService userService = new UserService();
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Assuming the sectionId is passed as a parameter in the request
-        int instructor_id = 2;
+        int userId = 3;
+        int instructor_id = userService.getSpecificId(userId,3);
         int sectionId = Integer.parseInt(request.getParameter("section_id"));
         Section section = sectionService.getById(sectionId);
         String courseName = section.getCourse().getName();
@@ -33,7 +37,7 @@ public class SectionGradesServlet extends HttpServlet {
 
         // Set the sectionGrades as an attribute in the request
         request.setAttribute("section_id", sectionId);
-        request.setAttribute("sections", sectionId);
+        request.setAttribute("sections", sections);
         request.setAttribute("section_grades", sectionGrades);
         request.setAttribute("course_name", courseName);
 
