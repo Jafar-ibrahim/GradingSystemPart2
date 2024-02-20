@@ -84,7 +84,7 @@ public class EnrollmentService {
             return false;
         }
     }
-    public String getInstructorSections(int instructorId) {
+    /*public String getInstructorSections(int instructorId) {
         StringBuilder outputBuilder = new StringBuilder();
 
         try {
@@ -108,10 +108,17 @@ public class EnrollmentService {
         }
 
         return outputBuilder.toString();
-    }
+    }*/
     public List<Section> getStudentSections(int studentId){
         try {
            return studentSectionDAO.getStudentSections(studentId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public List<Section> getInstructorSections(int instructorId){
+        try {
+            return instructorSectionDAO.getInstructorSections(instructorId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
