@@ -20,14 +20,16 @@ import java.util.List;
 public class AuthenticationServlet extends HttpServlet {
     UserService userService = new UserService();
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         int userId = userService.authenticateUser(username,password);
         RequestDispatcher dispatcher;
         if(userId != -1){
             UserDTO userDTO = userService.getById(userId);
-            request.setAttribute("user_dto",userDTO);
+            String userFullName = userService.getUserFullName(userId);
+            request.setAttribute("user_id",userId);
+            request.setAttribute("user_fullName",userFullName);
             if(userDTO.getRole() == Role.ADMIN){
                 int adminId = userService.getSpecificId(userId,1);
                 request.setAttribute("admin_id",adminId);
@@ -44,7 +46,7 @@ public class AuthenticationServlet extends HttpServlet {
             request.setAttribute("error","");
         }else {
             request.setAttribute("error","Username or Password are invalid");
-            dispatcher = request.getRequestDispatcher("views/GradeReport.jsp");
+            dispatcher = request.getRequestDispatcher("views/index.jsp");
         }
 
         // Forward the request to the JSP

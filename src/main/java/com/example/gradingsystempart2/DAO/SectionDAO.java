@@ -38,7 +38,7 @@ public class SectionDAO {
         }
     }
 
-    public static void checkSectionExists(int sectionId) throws SQLException {
+    public static void checkSectionExists(int sectionId) throws SectionNotFoundException {
         if(!database.recordExists("section",sectionId))
             throw new SectionNotFoundException();
     }

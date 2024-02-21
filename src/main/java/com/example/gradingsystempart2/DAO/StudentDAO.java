@@ -36,7 +36,7 @@ public class StudentDAO {
         }
     }
 
-    public static void checkStudentExists( int studentId) throws SQLException {
+    public static void checkStudentExists( int studentId) throws UserNotFoundException {
         if(!database.recordExists("student",studentId))
             throw new UserNotFoundException();
     }

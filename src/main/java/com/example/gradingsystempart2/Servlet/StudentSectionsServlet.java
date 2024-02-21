@@ -25,8 +25,8 @@ public class StudentSectionsServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Assuming the studentId is passed as a parameter in the request
-        int userId = 5/*Integer.parseInt(request.getParameter("student_id"))*/;
-        int studentId = userService.getSpecificId(userId,3);
+        int userId = Integer.parseInt(request.getParameter("user_id"));
+        int studentId = Integer.parseInt(request.getParameter("student_id"));
         UserDTO userDTO = userService.getById(userId);
         String studentName = userDTO.getFirstName()+" "+userDTO.getLastName();
         // Call the service method to get the grade report

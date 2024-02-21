@@ -55,7 +55,7 @@ public class InstructorDAO {
         }
     }
 
-    public static void checkInstructorExists(int instructorId) throws SQLException {
+    public static void checkInstructorExists(int instructorId) throws UserNotFoundException {
         if(!database.recordExists("instructor",instructorId))
             throw new UserNotFoundException();
     }

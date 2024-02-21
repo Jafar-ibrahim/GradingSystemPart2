@@ -1,81 +1,127 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Section Grades Lookup</title>
+    <title>Student Dashboard</title>
     <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #e0e6f6;
-            background: linear-gradient(to right, #e0e6f6, #d6e2ef);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
         }
 
-        .container {
-            background-color: #fff;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+
+
+        h1 {
             text-align: center;
-            width: 350px;
-            margin: 0 auto;
+            color: #333;
+            margin-top: 40px;
         }
 
         h2 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
+            text-align: center;
+            color: #555;
+            margin-top: 10px;
         }
 
-        label {
-            display: inline-block;
-            width: 120px;
-            text-align: right;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #777;
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Center cards horizontally */
+            align-items: center; /* Center cards vertically */
+            gap: 20px;
+            width: 70%;
         }
 
-        input[type="text"] {
-            width: 200px;
-            padding: 10px;
-            border: 1px solid #ccc;
+        .card {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            width: 250px;
+            height: 170px;
+            transition: transform 0.2s ease-in-out;
+            margin-top: 20px;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .card h4 {
+            font-size: 18px;
             margin-bottom: 15px;
         }
 
+        .card p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
         button {
-            background-color: #428bca;
-            color: #fff;
-            padding: 10px 20px;
+            background-color: cornflowerblue;
+            color: white;
+            padding: 8px 16px;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.2s ease-in-out;
         }
 
         button:hover {
             background-color: #357ebd;
         }
+
+        @media (max-width: 768px) {
+            .card-container {
+                flex-direction: column;
+            }
+
+            .card {
+                margin-bottom: 20px;
+            }
+        }
     </style>
 </head>
-
 <body>
-<div class="container">
-    <h2>Section Grades Lookup</h2>
-    <form action="${pageContext.request.contextPath}/section_grades" method="get">
-        <label for="sectionId">Enter Section ID:</label>
-        <input type="text" id="sectionId" name="section_id" required placeholder="Enter Section ID" />
-        <br>
-        <button type="submit">Get Grades</button>
-    </form>
+<h1>Instructor Dashboard</h1>
+<div style="text-align: center; margin-top: 20px;">
+    <h2>Welcome, Instructor  <strong>${user_fullName}</strong> </h2>
+</div>
+<div class="card-container">
+    <div class="card">
+        <h4>View Sections Grades</h4>
+        <p>View your sections grades , and perform operations on them.</p>
+        <form action="${pageContext.request.contextPath}/section_grades" method="GET">
+            <input type="hidden" name="user_id" value="${user_id}">
+            <input type="hidden" name="instructor_id" value="${instructor_id}">
+            <input type="hidden" name="role" value="INSTRUCTOR">
+            <button type="submit">View Grades</button>
+        </form>
+    </div>
+    <div class="card">
+        <h4>View Assigned Sections</h4>
+        <p>View the sections you are assigned</p>
+        <form action="${pageContext.request.contextPath}/InstructorSections" method="GET">
+            <input type="hidden" name="user_id" value="${user_id}">
+            <input type="hidden" name="instructor_id" value="${instructor_id}">
+            <input type="hidden" name="role" value="INSTRUCTOR">
+            <button type="submit">View Courses</button>
+        </form>
+    </div>
+
 </div>
 </body>
-
 </html>

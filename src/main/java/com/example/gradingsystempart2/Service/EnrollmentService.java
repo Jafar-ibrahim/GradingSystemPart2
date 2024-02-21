@@ -7,6 +7,7 @@ import com.example.gradingsystempart2.Model.Section;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -73,16 +74,10 @@ public class EnrollmentService {
         }
     }
     public boolean instructorHasAccessToSection(int instructorId, int sectionId){
-        return instructorSectionDAO.InstructorSectionExists(instructorId,sectionId);
+        return InstructorSectionDAO.InstructorSectionExists(instructorId,sectionId);
     }
     public boolean studentIsInSection(int studentId, int sectionId){
-        try{
-            return studentSectionDAO.StudentSectionExists(studentId,sectionId);
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
+        return StudentSectionDAO.StudentSectionExists(studentId,sectionId);
     }
     /*public String getInstructorSections(int instructorId) {
         StringBuilder outputBuilder = new StringBuilder();
@@ -121,6 +116,14 @@ public class EnrollmentService {
             return instructorSectionDAO.getInstructorSections(instructorId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+    public List<Integer> getStudentIdsBySection(int sectionId){
+        try {
+            return studentSectionDAO.getStudentIdsBySection(sectionId);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 

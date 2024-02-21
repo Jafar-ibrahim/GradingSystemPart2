@@ -23,11 +23,11 @@ public class GradeService {
         studentDAO = new StudentDAO();
     }
 
-    public String addGrade(int studentId, int grade, int sectionId){
+    public String addGrade(int studentId, int sectionId, double grade){
         try{
             StudentDAO.checkStudentExists(studentId);
             SectionDAO.checkSectionExists(sectionId);
-            gradeDAO.insertGrade(studentId,grade,sectionId);
+            gradeDAO.insertGrade(studentId,sectionId,grade);
             return "Grade added successfully";
         }catch (SQLException e){
             System.out.println(e.getMessage());
@@ -51,7 +51,7 @@ public class GradeService {
             return "No matching record found for the specified student and section.";
         }
     }
-    public String updateGrade(int studentId, int sectionId, int newGrade){
+    public String updateGrade(int studentId, int sectionId, double newGrade){
         int affectedRows = 0;
         try{
             StudentDAO.checkStudentExists(studentId);

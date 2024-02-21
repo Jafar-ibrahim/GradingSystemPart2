@@ -1,6 +1,7 @@
 package com.example.gradingsystempart2.DAO;
 
 import com.example.gradingsystempart2.Database.Database;
+import com.example.gradingsystempart2.Exceptions.DuplicateRecordException;
 import com.example.gradingsystempart2.Model.Grade;
 import com.example.gradingsystempart2.Model.Section;
 import javafx.util.Pair;
@@ -21,21 +22,21 @@ public class GradeDAO {
     private final SectionDAO sectionDAO = new SectionDAO();
     private final StudentDAO studentDAO = new StudentDAO();
 
-    public int insertGrade(int studentId, int grade, int sectionId) throws SQLException {
+    public int insertGrade(int studentId, int sectionId, double grade) throws SQLException {
         String sql = "INSERT INTO grade(student_id, section_id, grade) VALUES (?, ?, ?)";
         try (Connection connection = database.getDatabaseConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, studentId);
             preparedStatement.setInt(2, sectionId);
-            preparedStatement.setInt(3, grade);
+            preparedStatement.setDouble(3, grade);
             return preparedStatement.executeUpdate();
         }
     }
-    public int updateGrade(int studentId, int sectionId, int newGrade) throws SQLException {
+    public int updateGrade(int studentId, int sectionId, double newGrade) throws SQLException {
         String sql = "UPDATE grade SET grade = ? WHERE student_id = ? AND section_id = ?";
         try (Connection connection = database.getDatabaseConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, newGrade);
+            preparedStatement.setDouble(1, newGrade);
             preparedStatement.setInt(2, studentId);
             preparedStatement.setInt(3, sectionId);
             return preparedStatement.executeUpdate();
@@ -144,5 +145,13 @@ public class GradeDAO {
         }
         // Default value if there is an issue or no data is found
         return 0.0;
+    }
+
+    public static boolean gradeExists(int studentId , int sectionId){
+        return database.recordExists("grade",studentId,sectionId);
+    }
+    public static void checkGradeExists(int studentId , int sectionId) throws DuplicateRecordException{
+        if(gradeExists(studentId,sectionId))
+            throw new DuplicateRecordException();
     }
 }

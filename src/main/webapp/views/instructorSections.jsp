@@ -65,16 +65,16 @@
 
 <body>
 <div class="container">
-    <h2>Student ${student_name}'s Courses</h2>
+    <h2>Instructor ${instructor_name}'s Courses</h2>
     <table>
         <thead>
         <tr>
-            <th>Section</th>
+            <th>Section ID</th>
             <th>Course Name</th>
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="section" items="${student_sections}">
+        <c:forEach var="section" items="${instructor_sections}">
             <tr>
                 <td>${section.getId()}</td>
                 <td>${section.getCourse().getName()}</td>

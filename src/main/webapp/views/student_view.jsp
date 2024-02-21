@@ -21,13 +21,13 @@
 
 
 
-        h3 {
+        h1 {
             text-align: center;
             color: #333;
             margin-top: 40px;
         }
 
-        p {
+        h2 {
             text-align: center;
             color: #555;
             margin-top: 10px;
@@ -96,9 +96,9 @@
     </style>
 </head>
 <body>
-<h3>Student Dashboard</h3>
+<h1>Student Dashboard</h1>
 <div style="text-align: center; margin-top: 20px;">
-    <p>Welcome to your dashboard <strong>${username}</strong> </p>
+    <h2>Welcome, Student <strong>${user_fullName}</strong> </h2>
 </div>
 <div class="card-container">
     <div class="card">
@@ -106,7 +106,6 @@
         <p>View your courses grades , in addition to your and your sections average</p>
         <form action="${pageContext.request.contextPath}/gradeReport" method="GET">
             <input type="hidden" name="user_id" value="${user_id}">
-            <input type="hidden" name="user_dto" value="${user_dto}">
             <input type="hidden" name="student_id" value="${student_id}">
             <input type="hidden" name="role" value="STUDENT">
             <button type="submit">View Grades</button>
@@ -117,7 +116,6 @@
         <p>View the courses you are taking</p>
         <form action="${pageContext.request.contextPath}/studentSections" method="GET">
             <input type="hidden" name="user_id" value="${user_id}">
-            <input type="hidden" name="user_dto" value="${user_dto}">
             <input type="hidden" name="student_id" value="${student_id}">
             <input type="hidden" name="role" value="STUDENT">
             <button type="submit">View Courses</button>

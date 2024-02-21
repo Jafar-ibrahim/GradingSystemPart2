@@ -1,6 +1,7 @@
 package com.example.gradingsystempart2.DAO;
 
 import com.example.gradingsystempart2.Database.Database;
+import com.example.gradingsystempart2.Exceptions.RecordNotFoundException;
 import com.example.gradingsystempart2.Model.Section;
 
 import javax.sql.DataSource;
@@ -37,8 +38,12 @@ public class InstructorSectionDAO {
         }
     }
 
-    public boolean InstructorSectionExists(int instructorId, int sectionId) {
+    public static boolean InstructorSectionExists(int instructorId, int sectionId) {
         return database.recordExists("instructor_section",instructorId,sectionId);
+    }
+    public static void checkStudentSectionExists( int instructorId, int sectionId) throws RecordNotFoundException {
+        if(!InstructorSectionExists(instructorId,sectionId))
+            throw new RecordNotFoundException();
     }
     public List<Section> getInstructorSections(int instructorId) throws SQLException {
         List<Section> sectionsList = new ArrayList<>();

@@ -37,7 +37,7 @@ public class CourseDAO {
         }
     }
 
-    public static void checkCourseExists(int courseId) throws SQLException {
+    public static void checkCourseExists(int courseId) throws CourseNotFoundException {
         if(!database.recordExists("course",courseId))
             throw new CourseNotFoundException();
     }

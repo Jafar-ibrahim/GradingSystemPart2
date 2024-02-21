@@ -90,7 +90,7 @@
 <body>
 <div class="container">
   <h1>Grading System - Login </h1>
-  <form action="/auth" method="POST">
+  <form action="${pageContext.request.contextPath}/auth" method="POST">
     <label for="username">Username:</label>
     <input id="username" name="username" type="text" required placeholder="Enter Username" />
     <br>
@@ -98,17 +98,11 @@
     <input id="password" name="password" type="password" placeholder="Enter Password" required />
     <br>
     <input type="submit" value="Login" />
-    <c:if test="${not empty errorMessage}">
+    <c:if test="${not empty error}">
       <div class="error-message active">
-        <span>${errorMessage}</span>
+        <span>${error}</span>
       </div>
     </c:if>
-  </form>
-  <form action="instructor_view.jsp">
-    <button class="back-button" type="submit">instructor view</button>
-  </form>
-  <form action="student_view.jsp">
-    <button class="back-button" type="submit">student view</button>
   </form>
 </div>
 </body>

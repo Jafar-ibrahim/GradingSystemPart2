@@ -1,7 +1,10 @@
 package com.example.gradingsystempart2.Servlet;
 
 import com.example.gradingsystempart2.Model.Grade;
+import com.example.gradingsystempart2.Model.Section;
+import com.example.gradingsystempart2.Model.Student;
 import com.example.gradingsystempart2.Model.UserDTO;
+import com.example.gradingsystempart2.Service.EnrollmentService;
 import com.example.gradingsystempart2.Service.GradeService;
 import com.example.gradingsystempart2.Service.UserService;
 import javafx.util.Pair;
@@ -15,27 +18,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/gradeReport")
-public class GradeReportServlet extends HttpServlet {
+@WebServlet("/InstructorSections")
+public class InstructorSectionsServlet extends HttpServlet {
     UserService userService = new UserService();
-    GradeService gradeService = new GradeService();
+    EnrollmentService enrollmentService = new EnrollmentService();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Assuming the studentId is passed as a parameter in the request
         int userId = Integer.parseInt(request.getParameter("user_id"));
-        int studentId = Integer.parseInt(request.getParameter("student_id"));
+        int instructorId = Integer.parseInt(request.getParameter("instructor_id"));
         UserDTO userDTO = userService.getById(userId);
-        String studentName = userDTO.getFirstName()+" "+userDTO.getLastName();
-        // Call the service method to get the grade report
-        List<Pair<Grade, Double>> gradeReport = gradeService.getGradeReport(studentId);
-        double studentAverage = gradeService.getStudentAverage(studentId);
-        // Set the gradeReport as an attribute in the request
-        request.setAttribute("gradeReport", gradeReport);
-        request.setAttribute("student_name", studentName);
-        request.setAttribute("student_average", studentAverage);
+        String instructorName = userDTO.getFirstName()+" "+userDTO.getLastName();
+        List<Section> sections = enrollmentService.getInstructorSections(instructorId);
+        request.setAttribute("instructor_sections", sections);
+        request.setAttribute("instructor_name", instructorName);
+
 
         // Forward the request to the JSP
-        RequestDispatcher dispatcher = request.getRequestDispatcher("views/GradeReport.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("views/instructorSections.jsp");
         dispatcher.forward(request, response);
     }
 }

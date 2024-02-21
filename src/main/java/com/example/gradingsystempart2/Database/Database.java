@@ -62,7 +62,7 @@ public class Database {
         }
     }
 
-    public ResultSet executeQuery(String query, Object... params) throws SQLException {
+    public ResultSet executeQuery(String query, int... params) throws SQLException {
         Connection connection = getDatabaseConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         for (int i = 0; i < params.length; i++) {
@@ -155,12 +155,12 @@ public class Database {
             return false;
         }
     }
-    public ResultSet readRecord(String tableName, int idToRead){
+    public ResultSet readRecord(String tableName, int... idToRead){
         List<String> columns = getTableColumnNames(tableName);
         String primaryKeyColumn = columns.get(0);
         String readSQL = "SELECT * FROM " + tableName + " WHERE " + primaryKeyColumn + " = ?";
-        /*if (idToRead.length == 2)
-            readSQL += " AND "+ columns.get(1) + "= ?";*/
+        if (idToRead.length == 2)
+            readSQL += " AND "+ columns.get(1) + "= ?";
         try {
             return executeQuery(readSQL,idToRead);
         } catch (SQLException e) {
@@ -172,7 +172,7 @@ public class Database {
     public boolean recordExists(String tableName,int... ids) {
         String query = pkQuery(tableName);
 
-        try(ResultSet resultSet = executeQuery(query, ids)){
+        try(ResultSet resultSet = executeQuery(query,ids)){
             return resultSet.next();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -185,6 +185,7 @@ public class Database {
             case "section":
                 return "SELECT section_id FROM " + tableName + " WHERE section_id = ?";
             case "student_section":
+            case "grade":
                 return "SELECT student_id FROM " + tableName + " WHERE student_id = ? AND section_id = ?";
             case "instructor_section":
                 return "SELECT instructor_id FROM " + tableName + " WHERE instructor_id = ? AND section_id = ?";
@@ -194,6 +195,7 @@ public class Database {
                 return "SELECT instructor_id FROM " + tableName + " WHERE instructor_id = ?";
             case "course":
                 return "SELECT course_id FROM " + tableName + " WHERE course_id = ?";
+
             default:
                 throw new IllegalArgumentException();
         }
