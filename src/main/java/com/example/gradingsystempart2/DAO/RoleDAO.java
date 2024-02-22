@@ -15,25 +15,17 @@ import java.util.NoSuchElementException;
 public class RoleDAO {
 
     private static final Database database = Database.getInstance();
+    private static final String TABLE_NAME = "role";
 
-
-    public void insertRole(int roleId , String roleName) throws SQLException {
-        String sql = "INSERT INTO role(role_id, name) VALUES (?,?)";
-        try (Connection connection = database.getDatabaseConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, roleId);
-            preparedStatement.setString(2, roleName);
-            preparedStatement.executeUpdate();
-        }
+    public boolean insertRole(int roleId , String roleName) throws SQLException {
+        return database.insertRecord("role",roleId,roleName);
     }
 
-    public void deleteRole(int roleId) throws SQLException {
-        String sql = "DELETE FROM role WHERE role_id = ?";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, roleId);
-            preparedStatement.executeUpdate();
-        }
+    public boolean deleteRole(int roleId) throws SQLException {
+        return database.deleteRecord(TABLE_NAME,roleId);
+    }
+    public boolean updateName(int roleId, String newName){
+        return database.updateRecord(TABLE_NAME,"name",newName,roleId);
     }
     public Role getById(int roleId) throws SQLException {
         if(roleId -1 <= Role.values().length)

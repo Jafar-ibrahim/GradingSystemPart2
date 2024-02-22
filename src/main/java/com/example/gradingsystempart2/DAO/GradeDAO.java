@@ -21,35 +21,16 @@ public class GradeDAO {
     private static final Database database = Database.getInstance();
     private final SectionDAO sectionDAO = new SectionDAO();
     private final StudentDAO studentDAO = new StudentDAO();
+    private static final String TABLE_NAME = "grade";
 
-    public int insertGrade(int studentId, int sectionId, double grade) throws SQLException {
-        String sql = "INSERT INTO grade(student_id, section_id, grade) VALUES (?, ?, ?)";
-        try (Connection connection = database.getDatabaseConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, studentId);
-            preparedStatement.setInt(2, sectionId);
-            preparedStatement.setDouble(3, grade);
-            return preparedStatement.executeUpdate();
-        }
+    public boolean insertGrade(int studentId,int sectionId, double grade) throws SQLException {
+       return database.insertRecord("grade",studentId,sectionId,grade);
     }
-    public int updateGrade(int studentId, int sectionId, double newGrade) throws SQLException {
-        String sql = "UPDATE grade SET grade = ? WHERE student_id = ? AND section_id = ?";
-        try (Connection connection = database.getDatabaseConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setDouble(1, newGrade);
-            preparedStatement.setInt(2, studentId);
-            preparedStatement.setInt(3, sectionId);
-            return preparedStatement.executeUpdate();
-        }
+    public boolean updateGrade(int studentId, int sectionId, double newGrade) throws SQLException {
+        return database.updateRecord(TABLE_NAME,"grade",newGrade,studentId,sectionId);
     }
-    public int deleteGrade(int studentId, int sectionId) throws SQLException {
-        String sql = "DELETE FROM grade WHERE student_id = ? AND section_id = ?";
-        try (Connection connection = database.getDatabaseConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, studentId);
-            preparedStatement.setInt(2, sectionId);
-            return preparedStatement.executeUpdate();
-        }
+    public boolean deleteGrade(int studentId, int sectionId) throws SQLException {
+        return database.deleteRecord(TABLE_NAME,studentId,sectionId);
     }
     public List<Pair<Grade,Double>> getStudentGrades(int studentId) throws SQLException {
         String sql = "WITH SectionAverage AS ( " +

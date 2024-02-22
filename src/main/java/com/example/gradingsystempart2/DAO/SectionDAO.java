@@ -15,35 +15,28 @@ public class SectionDAO {
 
     private static final Database database = Database.getInstance();
     private final CourseDAO courseDAO = new CourseDAO();
+    private static final String TABLE_NAME = "section";
 
 
-    public void insertSection(int courseId) throws SQLException {
 
-        String sql = "INSERT INTO section(course_id, course_name) VALUES (?, ?)";
-        try (Connection connection = database.getDatabaseConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, courseId);
-            preparedStatement.setString(2, courseDAO.getCourseName(courseId));
-            preparedStatement.executeUpdate();
-        }
+    public boolean insertSection(int courseId) throws SQLException {
+        return database.insertRecord(TABLE_NAME,courseId);
     }
 
 
-    public void deleteSection(int sectionId) throws SQLException {
-        String sql = "DELETE FROM section WHERE section_id = ?";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, sectionId);
-            preparedStatement.executeUpdate();
-        }
+    public boolean deleteSection(int sectionId) throws SQLException {
+        return database.deleteRecord(TABLE_NAME,sectionId);
+    }
+    public boolean updateCourseId(int sectionId, int newCourseId ){
+        return database.updateRecord(TABLE_NAME,"course_id",newCourseId,sectionId);
     }
 
     public static void checkSectionExists(int sectionId) throws SectionNotFoundException {
-        if(!database.recordExists("section",sectionId))
+        if(!database.recordExists(TABLE_NAME,sectionId))
             throw new SectionNotFoundException();
     }
     public Section getById(int sectionId) throws SQLException {
-        try(ResultSet resultSet = database.readRecord("section",sectionId)){
+        try(ResultSet resultSet = database.readRecord(TABLE_NAME,sectionId)){
             if(resultSet.next()) {
                 int courseID = resultSet.getInt("course_id");
                 Course course = courseDAO.getById(courseID);

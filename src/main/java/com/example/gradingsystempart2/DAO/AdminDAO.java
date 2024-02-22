@@ -12,22 +12,16 @@ import java.sql.SQLException;
 public class AdminDAO {
 
     private static final Database database = Database.getInstance();
-    public void insertAdmin(int userId) throws SQLException {
-        String sql = "INSERT INTO admin(user_id) VALUES (?)";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, userId);
-            preparedStatement.executeUpdate();
-        }
+    private static final String TABLE_NAME = "admin";
+    public boolean insertAdmin(int userId) throws SQLException {
+        return database.insertRecord(TABLE_NAME,userId);
     }
 
-    public void deleteAdmin(int adminId) throws SQLException {
-        String sql = "DELETE FROM admin WHERE admin_id = ?";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, adminId);
-            preparedStatement.executeUpdate();
-        }
+    public boolean deleteAdmin(int adminId) throws SQLException {
+        return database.deleteRecord(TABLE_NAME,adminId);
+    }
+    public boolean updateUserId(int userId, int newUserId ){
+        return database.updateRecord(TABLE_NAME,"user_id",newUserId,userId);
     }
 
     public int getAdminId(int userId) throws SQLException {

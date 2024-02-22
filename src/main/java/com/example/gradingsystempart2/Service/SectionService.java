@@ -38,6 +38,9 @@ public class SectionService {
             return "Section deletion failed";
         }
     }
+    public boolean updateCourseId(int sectionId, int newCourseId ){
+        return sectionDAO.updateCourseId(newCourseId,sectionId);
+    }
 
     public Section getById(int sectionId){
         try {

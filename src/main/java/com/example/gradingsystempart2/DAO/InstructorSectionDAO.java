@@ -16,26 +16,16 @@ public class InstructorSectionDAO {
 
     private static final Database database = Database.getInstance();
     private final SectionDAO sectionDAO = new SectionDAO();
+    private static final String TABLE_NAME = "instructor_section";
 
 
-    public void insertInstructorSection(int instructorId, int sectionId) throws SQLException {
-        String sql = "INSERT INTO instructor_section(instructor_id, section_id) VALUES (?, ?)";
-        try (Connection connection = database.getDatabaseConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, instructorId);
-            preparedStatement.setInt(2, sectionId);
-            preparedStatement.executeUpdate();
-        }
+
+    public boolean insertInstructorSection(int instructorId, int sectionId) throws SQLException {
+        return database.insertRecord("instructor_section",instructorId,sectionId);
     }
 
-    public void deleteInstructorSection(int instructorId, int sectionId) throws SQLException {
-        String sql = "DELETE FROM instructor_section WHERE instructor_id = ? AND section_id = ?";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, instructorId);
-            preparedStatement.setInt(2, sectionId);
-            preparedStatement.executeUpdate();
-        }
+    public boolean deleteInstructorSection(int instructorId, int sectionId) throws SQLException {
+        return database.deleteRecord(TABLE_NAME,instructorId,sectionId);
     }
 
     public static boolean InstructorSectionExists(int instructorId, int sectionId) {

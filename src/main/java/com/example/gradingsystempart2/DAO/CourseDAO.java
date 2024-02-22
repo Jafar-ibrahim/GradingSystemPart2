@@ -19,23 +19,18 @@ public class CourseDAO {
 
     private static final Database database = Database.getInstance();
 
+    private static final String TABLE_NAME = "course";
 
-    public void insertCourse(String courseName) throws SQLException {
-        String sql = "INSERT INTO course(course_name) VALUES (?)";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, courseName);
-            preparedStatement.executeUpdate();
-        }
+    public boolean insertCourse(String courseName) {
+        return database.insertRecord("course",courseName);
     }
-    public void deleteCourse(int courseId) throws SQLException {
-        String sql = "DELETE FROM course WHERE course_id = ?";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, courseId);
-            preparedStatement.executeUpdate();
-        }
+    public boolean deleteCourse(int courseId) {
+        return database.deleteRecord(TABLE_NAME,courseId);
     }
+    public boolean updateCourseName(int courseId,String name ){
+        return database.updateRecord(TABLE_NAME,"course_name",name,courseId);
+    }
+
 
     public static void checkCourseExists(int courseId) throws CourseNotFoundException {
         if(!database.recordExists("course",courseId))

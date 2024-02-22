@@ -29,9 +29,7 @@ import java.util.Objects;
 @WebServlet("/grades_crud")
 public class GradeCrudServlet extends HttpServlet {
     GradeService gradeService = new GradeService();
-    SectionService sectionService = new SectionService();
     EnrollmentService enrollmentService = new EnrollmentService();
-    UserService userService = new UserService();
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String section_id = request.getParameter("section_id");
         if(!Objects.equals(section_id, "") && section_id != null){
@@ -68,7 +66,9 @@ public class GradeCrudServlet extends HttpServlet {
             GradeDAO.checkGradeExists(student_id,section_id);
             if(!enrollmentService.studentIsInSection(student_id,section_id)){
                 request.setAttribute("error", "Student is not enrolled in this section");
-            }else {
+            } else if (grade < 0 || grade > 100) {
+                request.setAttribute("error", "Grade must be 0-100");
+            } else {
                 gradeService.addGrade(student_id,section_id,grade);
                 request.setAttribute("success", "Grade added successfully");
             }
@@ -92,6 +92,8 @@ public class GradeCrudServlet extends HttpServlet {
             StudentDAO.checkStudentExists(student_id);
             if(!GradeDAO.gradeExists(student_id,section_id)){
                 request.setAttribute("error", "A grade does not exist for this student , add one instead");
+            }else if (grade < 0 || grade > 100) {
+                request.setAttribute("error", "Grade must be 0-100");
             }else {
                 gradeService.updateGrade(student_id, section_id, grade);
                 request.setAttribute("success", "Grade modified successfully");

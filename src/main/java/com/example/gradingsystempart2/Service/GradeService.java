@@ -23,49 +23,36 @@ public class GradeService {
         studentDAO = new StudentDAO();
     }
 
-    public String addGrade(int studentId, int sectionId, double grade){
+    public boolean addGrade(int studentId, int sectionId, double grade){
         try{
             StudentDAO.checkStudentExists(studentId);
             SectionDAO.checkSectionExists(sectionId);
-            gradeDAO.insertGrade(studentId,sectionId,grade);
-            return "Grade added successfully";
+            return gradeDAO.insertGrade(studentId,sectionId,grade);
         }catch (SQLException e){
             System.out.println(e.getMessage());
             e.printStackTrace();
-            return "Grade addition failed.";
+            return false;
         }
     }
 
-    public String deleteGrade(int studentId, int sectionId){
-        int affectedRows = 0;
+    public boolean deleteGrade(int studentId, int sectionId){
         try{
-            affectedRows = gradeDAO.deleteGrade(studentId,sectionId);
+            return gradeDAO.deleteGrade(studentId,sectionId);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-        }
-
-        if (affectedRows > 0) {
-            return "Grade deleted successfully.";
-        } else {
-            return "No matching record found for the specified student and section.";
+            return false;
         }
     }
-    public String updateGrade(int studentId, int sectionId, double newGrade){
-        int affectedRows = 0;
+    public boolean updateGrade(int studentId, int sectionId, double newGrade){
         try{
             StudentDAO.checkStudentExists(studentId);
             SectionDAO.checkSectionExists(sectionId);
-            affectedRows = gradeDAO.updateGrade(studentId,sectionId,newGrade);
+            return gradeDAO.updateGrade(studentId,sectionId,newGrade);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-        }
-
-        if (affectedRows > 0) {
-            return "Grade updated successfully.";
-        } else {
-            return "No matching record found for the specified student and section.";
+            return false;
         }
     }
 

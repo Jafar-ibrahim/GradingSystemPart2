@@ -11,14 +11,11 @@ import java.sql.SQLException;
 public class InstructorDAO {
 
     private static final Database database = Database.getInstance();
+    private static final String TABLE_NAME = "instructor";
 
-    public void insertInstructor( int userId) throws SQLException {
-        String sql = "INSERT INTO instructor(user_id) VALUES (?)";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, userId);
-            preparedStatement.executeUpdate();
-        }
+
+    public boolean insertInstructor(int userId) throws SQLException {
+        return database.insertRecord("instructor",userId);
     }
 
     public String getInstructorFullName( int instructorId) {
@@ -44,15 +41,11 @@ public class InstructorDAO {
         return null;
     }
 
-
-
-    public void deleteInstructor(int instructorId) throws SQLException {
-        String sql = "DELETE FROM instructor WHERE instructor_id = ?";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, instructorId);
-            preparedStatement.executeUpdate();
-        }
+    public boolean deleteInstructor(int instructorId) throws SQLException {
+        return database.deleteRecord(TABLE_NAME,instructorId);
+    }
+    public boolean updateUserId(int instructorId, int newUserId ){
+        return database.updateRecord(TABLE_NAME,"user_id",newUserId,instructorId);
     }
 
     public static void checkInstructorExists(int instructorId) throws UserNotFoundException {

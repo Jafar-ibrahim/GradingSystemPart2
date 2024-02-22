@@ -17,24 +17,20 @@ public class StudentDAO {
 
     private static final Database database = Database.getInstance();
     private final UserDAO userDAO = new UserDAO();
+    private static final String TABLE_NAME = "student";
 
-    public void insertStudent(int userId) throws SQLException {
-        String sql = "INSERT INTO student(user_id) VALUES (?)";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, userId);
-            preparedStatement.executeUpdate();
-        }
+
+    public boolean insertStudent(int userId) throws SQLException {
+        return database.insertRecord("student",userId);
     }
 
-    public void deleteStudent(int studentId) throws SQLException {
-        String sql = "DELETE FROM student WHERE student_id = ?";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, studentId);
-            preparedStatement.executeUpdate();
-        }
+    public boolean deleteStudent(int studentId) throws SQLException {
+        return database.deleteRecord(TABLE_NAME,studentId);
     }
+    public boolean updateUserId(int studentId, int newUserId ){
+        return database.updateRecord(TABLE_NAME,"user_id",newUserId,studentId);
+    }
+
 
     public static void checkStudentExists( int studentId) throws UserNotFoundException {
         if(!database.recordExists("student",studentId))

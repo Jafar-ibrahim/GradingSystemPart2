@@ -11,44 +11,34 @@ public class UserDAO {
 
     private static final Database database = Database.getInstance();
     private final RoleDAO roleDAO = new RoleDAO();
+    private static final String TABLE_NAME = "user";
+
 
     public int insertUser(String username, String password,
                                   String firstName, String lastName, int roleId) throws SQLException {
-        int userId = -1;
-        String sql = "INSERT INTO user(username, password, first_name, last_name, role_id) VALUES (?, ?, ?, ?, ?)";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
-            preparedStatement.setString(3, firstName);
-            preparedStatement.setString(4, lastName);
-            preparedStatement.setInt(5, roleId);
-            preparedStatement.executeUpdate();
+        if(database.insertRecord(TABLE_NAME,username,password,firstName,lastName,roleId))
+            return getIdByUsername(username);
 
-            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    userId = generatedKeys.getInt(1);
-                } else {
-                    throw new SQLException("User creation failed, no ID obtained.");
-                }
+        return -1;
+    }
+    public int getIdByUsername(String username) throws SQLException{
+        String query = "SELECT user_id FROM user WHERE username = '"+username+"'";
+        try(ResultSet resultSet = database.executeQuery(query)){
+            if(resultSet.next()){
+                return resultSet.getInt("user_id");
             }
         }
-
-        return userId;
+        return -1;
     }
-    public void deleteUser(int userId) throws SQLException {
-        String sql = "DELETE FROM user WHERE user_id = ?";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, userId);
-            preparedStatement.executeUpdate();
-        }
+    public boolean deleteUser(int userId) throws SQLException {
+        return database.deleteRecord(TABLE_NAME,userId);
     }
 
     public static void checkUserExists(Connection connection, int userId) throws SQLException {
-        if(!database.recordExists("user",userId))
+        if(!database.recordExists(TABLE_NAME,userId))
             throw new UserNotFoundException();
     }
+
     public String getFullName(int userId) throws SQLException {
         String sql = "SELECT first_name, last_name FROM user WHERE user_id = ?";
         String fullName = null; // Default value if user not found
@@ -111,7 +101,7 @@ public class UserDAO {
     }
 
     public UserDTO getById(int userId) throws SQLException {
-        try(ResultSet resultSet = database.readRecord("user",userId)){
+        try(ResultSet resultSet = database.readRecord(TABLE_NAME,userId)){
             if(resultSet.next()) {
                 System.out.println("inside");
                 String username = resultSet.getString("username");

@@ -94,6 +94,13 @@ public class UserService {
         }
 
     }
+    public boolean updateStudentUserId(int studentId, int newUserId ){
+        return studentDAO.updateUserId(studentId,newUserId);
+    }
+    public boolean updateInstructorUserId(int instructorId, int newUserId ){
+        return studentDAO.updateUserId(instructorId,newUserId);
+    }
+
     public int authenticateUser(String username, String password) {
         try {
             return userDAO.authenticateUser(username,password);

@@ -51,7 +51,15 @@ public class Database {
             throw new SQLException("Couldn't establish connection", e);
         }
     }
-
+    private int executeUpdate(String query, int... params) throws SQLException {
+        try (Connection connection = getDatabaseConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            for (int i = 0; i < params.length; i++) {
+                preparedStatement.setObject(i + 1, params[i]);
+            }
+            return preparedStatement.executeUpdate();
+        }
+    }
     private int executeUpdate(String query, Object... params) throws SQLException {
         try (Connection connection = getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -71,7 +79,7 @@ public class Database {
         return preparedStatement.executeQuery();
     }
 
-    private List<String> getTableColumnNames(String tableName) {
+    public List<String> getTableColumnNames(String tableName) {
         List<String> columnNames = new ArrayList<>();
 
         try (Connection connection = getDatabaseConnection()) {
@@ -114,16 +122,22 @@ public class Database {
         return tableContent;
     }
 
-    private boolean insertRecord(String tableName, Map<String, String> inputData) {
+    public boolean insertRecord(String tableName, Object... inputData) {
         StringJoiner columns = new StringJoiner(", ");
-        StringJoiner values = new StringJoiner(", ");
-        for (String field : inputData.keySet()) {
-            columns.add(field);
-            values.add("?");
+        StringJoiner placeholder = new StringJoiner(", ");
+        List<String> columnNames = getTableColumnNames(tableName);
+        // primary keys are not an input , they are auto generated
+        if(!(tableName.equals("student_section")
+                || tableName.equals("instructor_section") || tableName.equals("grade"))){
+            columnNames.remove(0);
         }
-        String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (" + values + ")";
+        for (String field : columnNames) {
+            columns.add(field);
+            placeholder.add("?");
+        }
+        String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (" + placeholder + ")";
         try {
-            executeUpdate(sql, inputData.values().toArray());
+            executeUpdate(sql, inputData);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -132,10 +146,15 @@ public class Database {
     }
 
     public boolean updateRecord(String tableName, String columnToUpdate,
-                                String primaryKeyColumn, String idToUpdate, String newValue) {
-        String query = "UPDATE " + tableName + " SET " + columnToUpdate + " = ? WHERE " + primaryKeyColumn + " = ?";
+                                Object newValue,int... pk) {
+        System.out.println(columnToUpdate);
+        List<String> columns = getTableColumnNames(tableName);
+        String newValueString = String.valueOf(newValue);
+        String query = "UPDATE " + tableName + " SET " + columnToUpdate + " = '" +newValueString+ "' WHERE " + columns.get(0) + " = ?";
+        if (pk.length == 2)
+            query += " AND "+ columns.get(1) + "= ?";
         try {
-            int rowsUpdated = executeUpdate(query, newValue, idToUpdate);
+            int rowsUpdated = executeUpdate(query, pk);
             return rowsUpdated > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -143,10 +162,12 @@ public class Database {
         return false;
     }
 
-    public boolean deleteRecord(String tableName, String idToDelete) {
+    public boolean deleteRecord(String tableName, int... idToDelete) {
         List<String> columns = getTableColumnNames(tableName);
         String primaryKeyColumn = columns.get(0);
         String deleteSQL = "DELETE FROM " + tableName + " WHERE " + primaryKeyColumn + " = ?";
+        if (idToDelete.length == 2)
+            deleteSQL += " AND "+ columns.get(1) + "= ?";
         try {
             int rowsDeleted = executeUpdate(deleteSQL, idToDelete);
             return rowsDeleted > 0;
@@ -172,7 +193,7 @@ public class Database {
     public boolean recordExists(String tableName,int... ids) {
         String query = pkQuery(tableName);
 
-        try(ResultSet resultSet = executeQuery(query,ids)){
+        try(ResultSet resultSet = executeQuery(query, ids)){
             return resultSet.next();
         } catch (SQLException e) {
             e.printStackTrace();

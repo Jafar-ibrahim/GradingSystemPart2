@@ -107,7 +107,6 @@
         <form action="${pageContext.request.contextPath}/section_grades" method="GET">
             <input type="hidden" name="user_id" value="${user_id}">
             <input type="hidden" name="instructor_id" value="${instructor_id}">
-            <input type="hidden" name="role" value="INSTRUCTOR">
             <button type="submit">View Grades</button>
         </form>
     </div>
@@ -118,7 +117,7 @@
             <input type="hidden" name="user_id" value="${user_id}">
             <input type="hidden" name="instructor_id" value="${instructor_id}">
             <input type="hidden" name="role" value="INSTRUCTOR">
-            <button type="submit">View Courses</button>
+            <button type="submit">View Sections</button>
         </form>
     </div>
 

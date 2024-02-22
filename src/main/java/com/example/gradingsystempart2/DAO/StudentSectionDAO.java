@@ -16,29 +16,19 @@ public class StudentSectionDAO {
 
     private static final Database database = Database.getInstance();
     private final SectionDAO sectionDAO = new SectionDAO();
+    private static final String TABLE_NAME = "student_section";
 
-    public void insertStudentSection(int studentId, int sectionId) throws SQLException {
-        String sql = "INSERT INTO student_section(student_id, section_id) VALUES (?, ?)";
-        try (Connection connection = database.getDatabaseConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, studentId);
-            preparedStatement.setInt(2, sectionId);
-            preparedStatement.executeUpdate();
-        }
+
+    public boolean insertStudentSection(int studentId, int sectionId) throws SQLException {
+        return database.insertRecord(TABLE_NAME,studentId,sectionId);
     }
 
-    public void deleteStudentSection(int studentId, int sectionId) throws SQLException {
-        String sql = "DELETE FROM student_section WHERE student_id = ? AND section_id = ?";
-        try (Connection connection = database.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, studentId);
-            preparedStatement.setInt(2, sectionId);
-            preparedStatement.executeUpdate();
-        }
+    public boolean deleteStudentSection(int studentId, int sectionId) throws SQLException {
+        return database.deleteRecord(TABLE_NAME,studentId,sectionId);
     }
 
     public static boolean StudentSectionExists( int studentId, int sectionId){
-        return database.recordExists("instructor",studentId,sectionId);
+        return database.recordExists(TABLE_NAME,studentId,sectionId);
     }
     public static void checkStudentSectionExists( int studentId, int sectionId) throws RecordNotFoundException{
         if(!StudentSectionExists(studentId,sectionId))
@@ -47,7 +37,7 @@ public class StudentSectionDAO {
 
     public List<Section> getStudentSections(int studentId) throws SQLException {
         List<Section> sectionsList = new ArrayList<>();
-        try(ResultSet resultSet = database.readRecord("student_section",studentId)) {
+        try(ResultSet resultSet = database.readRecord(TABLE_NAME,studentId)) {
             while (resultSet.next()){
                 int section_id = resultSet.getInt("section_id");
                 Section section = sectionDAO.getById(section_id);
