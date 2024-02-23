@@ -40,7 +40,7 @@
         }
 
         table {
-            width: 100%; /* Full width within the container */
+            width: 50%; /* Full width within the container */
             border-collapse: collapse;
             margin-top: 20px; /* Add top margin for spacing */
             padding: 15px; /* Add padding for table content */
@@ -58,11 +58,6 @@
 
         tr:nth-child(even) {
             background-color: #f2f2f2;
-        }
-
-        /* Target the "Student Name" column */
-        th:nth-child(2), td:nth-child(2) {
-            width: 50%; /* Adjust width as needed */
         }
 
         .section-selector {
@@ -94,32 +89,6 @@
             length: 100px;
             margin-top: 15px; /* Adjust spacing as desired */
         }
-        .error-message {
-            color: #D8000C;
-            background-color: #FFBABA;
-        }
-
-        .success-message {
-            color: #270;
-            background-color: #DFF2BF;
-        }
-        .error-message ,
-        .success-message {
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 3px 3px 3px 3px;
-        }
-        .error-message.active ,
-        .success-message.active {
-            display: block;
-        }
-
-        .grade-actions {
-            width: 50%; /* 50% of remaining screen width */
-            padding: 30px; /* Padding for content within the section */
-            display: flex;
-            flex-direction: column;
-        }
 
         select, input {
             margin-bottom: 10px; /* Add spacing between dropdown and inputs */
@@ -144,7 +113,13 @@
             top: 25px;
             left: 25px;
         }
-
+        .back-link {
+            top: 25px;
+            right: 25px;
+        }
+        .back-link:hover {
+            background-color: #cccc00;
+        }
     </style>
 
 </head>
@@ -156,29 +131,31 @@
     <form action="${pageContext.request.contextPath}/logout" method="post">
         <button type="submit" class="logout-button">Logout</button>
     </form>
-    <h2>Section ${section_id} Grades</h2>
+    <h2>Section ${section_id} Statistical Info</h2>
     <h3>Course : ${course_name}</h3>
     <h3>Instructor : ${instructor_name}</h3>
     <table>
         <thead>
         <tr>
-            <th>Student ID</th>
-            <th>Student Name</th>
-            <th>Grade</th>
+            <th>Min</th>
+            <th>Max</th>
+            <th>Median</th>
+            <th>Average</th>
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="grade" items="${section_grades}">
-            <tr>
-                <td>${grade.getStudentId()}</td>
-                <td>${grade.getStudentFullName()}</td>
-                <td>${grade.getGrade()}</td>
-            </tr>
-        </c:forEach>
+
+        <tr>
+            <td>${statistics.get(0)}</td>
+            <td>${statistics.get(1)}</td>
+            <td>${statistics.get(2)}</td>
+            <td>${statistics.get(3)}</td>
+        </tr>
+
         </tbody>
     </table>
 </div>
-<form action="${pageContext.request.contextPath}/instructor/crud/section_grades" method="get">
+<form action="${pageContext.request.contextPath}/instructor/statistical_info" method="get">
     <div class="section-selector">
         <h3>Select Section:</h3>
         <select id="sectionId" name="section_id">
@@ -191,39 +168,6 @@
         <input type="hidden" name="instructor_id" value="${instructor_id}">
         <button type="submit">View Grades</button>
     </div>
-</form>
-
-<form action="${pageContext.request.contextPath}/instructor/crud/grades" method="get">
-<div class="grade-actions">
-    <c:if test="${not empty error}">
-        <div class="error-message active">
-            <span>${error}</span>
-        </div>
-    </c:if>
-    <c:if test="${not empty success}">
-        <div class="success-message active">
-            <span>${success}</span>
-        </div>
-    </c:if>
-    <h3>Grade Actions:</h3>
-    <select id="gradeAction" name="grade_action">
-        <option value="add">Add Grade</option>
-        <option value="delete">Delete Grade</option>
-        <option value="modify">Modify Grade</option>
-    </select>
-    <br>
-    <label for="studentId">Student ID:</label>
-    <input type="text" id="studentId" name="student_id">
-    <br>
-    <label for="grade">Grade:</label>
-    <input type="text" id="grade" name="grade">
-    <br>
-    <input type="hidden" name="section_id" value="${section_id}">
-    <input type="hidden" name="user_id" value="${user_id}">
-    <input type="hidden" name="instructor_id" value="${instructor_id}">
-
-    <button type="submit" >Save</button>
-</div>
 </form>
 
 </body>

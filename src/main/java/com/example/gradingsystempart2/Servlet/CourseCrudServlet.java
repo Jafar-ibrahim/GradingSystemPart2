@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-@WebServlet("/course_crud")
+@WebServlet("/admin/crud/course")
 public class CourseCrudServlet extends HttpServlet {
     CourseService courseService = new CourseService();
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -33,7 +33,7 @@ public class CourseCrudServlet extends HttpServlet {
             doPost(request,response);
         } else if (action.equals("delete")) {
             doDelete(request,response);
-        }else {
+        }else if(action.equals("update")) {
             doPut(request,response);
         }
     }
@@ -46,45 +46,55 @@ public class CourseCrudServlet extends HttpServlet {
             request.setAttribute("error", "Please enter all necessary info");
         }
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/admin_crud");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/crud");
         dispatcher.forward(request, response);
 
     }
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String stringCourseId = request.getParameter("course_id");
-        int courseId = Integer.parseInt(stringCourseId);
         String courseName = request.getParameter("course_name");
-        if(filled(courseName) && filled(stringCourseId)){
-            try {
-                courseService.updateCourseName(courseId,courseName);
-                request.setAttribute("success", "Course modified successfully");
-            } catch (CourseNotFoundException e) {
-                request.setAttribute("error", "No course is found with the given id");
+        try {
+            int courseId = Integer.parseInt(stringCourseId);
+            if (filled(courseName) && filled(stringCourseId)) {
+                try {
+                    courseService.updateCourseName(courseId, courseName);
+                    request.setAttribute("success", "Course modified successfully");
+                } catch (CourseNotFoundException e) {
+                    request.setAttribute("error", "No course is found with the given id");
+                }
+            } else {
+                request.setAttribute("error", "Please enter all necessary info");
             }
-        }else {
-            request.setAttribute("error", "Please enter all necessary info");
+        }catch (NumberFormatException e){
+                request.setAttribute("error", "Please enter numeric values in the numeric fields");
         }
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/admin_crud");
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/crud");
         dispatcher.forward(request, response);
 
     }
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String stringCourseId = request.getParameter("course_id");
-        int courseId = Integer.parseInt(stringCourseId);
-        if(filled(stringCourseId)){
-            try {
-                courseService.deleteCourse(courseId);
-                request.setAttribute("success", "Course deleted successfully");
-            } catch (CourseNotFoundException e) {
-                request.setAttribute("error", "No course is found with the given id");
+        try{
+            int courseId = Integer.parseInt(stringCourseId);
+            if(filled(stringCourseId)){
+                try {
+                    courseService.deleteCourse(courseId);
+                    request.setAttribute("success", "Course deleted successfully");
+                } catch (CourseNotFoundException e) {
+                    request.setAttribute("error", "No course is found with the given id");
+                }
+            }else {
+                request.setAttribute("error", "Please enter the ID");
             }
-        }else {
-            request.setAttribute("error", "Please enter the ID");
+        }catch (NumberFormatException e){
+            request.setAttribute("error", "Please enter numeric values in the numeric fields");
         }
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/admin_crud");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/crud");
         dispatcher.forward(request, response);
 
     }
+
     private boolean filled(Object o){
         if (o instanceof String)
             return !((String)o).isEmpty();

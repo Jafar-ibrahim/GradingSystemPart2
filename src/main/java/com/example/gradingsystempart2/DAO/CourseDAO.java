@@ -31,9 +31,11 @@ public class CourseDAO {
         return database.updateRecord(TABLE_NAME,"course_name",name,courseId);
     }
 
-
+    public static boolean courseExists(int courseId){
+        return database.recordExists("course",courseId);
+    }
     public static void checkCourseExists(int courseId) throws CourseNotFoundException {
-        if(!database.recordExists("course",courseId))
+        if(!courseExists(courseId))
             throw new CourseNotFoundException();
     }
 
@@ -82,6 +84,9 @@ public class CourseDAO {
             }
         }
         return "N/A";
+    }
+    public List<String> getColumnsNames(){
+        return database.getTableColumnsNames(TABLE_NAME);
     }
 
 }

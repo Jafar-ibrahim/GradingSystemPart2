@@ -17,11 +17,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@WebServlet("/instructor/crud/section_grades")
-public class SectionGradesServlet extends HttpServlet {
+@WebServlet("/instructor/statistical_info")
+public class StatisticalInfoServlet extends HttpServlet {
     GradeService gradeService = new GradeService();
     SectionService sectionService = new SectionService();
     EnrollmentService enrollmentService = new EnrollmentService();
@@ -34,20 +35,21 @@ public class SectionGradesServlet extends HttpServlet {
         String section_id = request.getParameter("section_id");
         if(section_id != null && !section_id.isEmpty()){
             int sectionId = Integer.parseInt(section_id);
+            List<Double> statistics = new ArrayList<>();
+            statistics.add(gradeService.getMinGradeForSection(sectionId));
+            statistics.add(gradeService.getMaxGradeForSection(sectionId));
+            statistics.add(gradeService.getMedianGradeForSection(sectionId));
+            statistics.add(gradeService.getAverageGradeForSection(sectionId));
             Section section = sectionService.getById(sectionId);
             String courseName = section.getCourse().getName();
-            List<Grade> sectionGrades = gradeService.getSectionGrades(sectionId);
-            List<Integer> studentsIds = enrollmentService.getStudentIdsBySection(sectionId);
             request.setAttribute("section_id", sectionId);
-            request.setAttribute("students_ids", studentsIds);
-            request.setAttribute("section_grades", sectionGrades);
             request.setAttribute("course_name", courseName);
+            request.setAttribute("statistics", statistics);
 
         }else{
             request.setAttribute("section_id", null);
-            request.setAttribute("students_ids", null);
-            request.setAttribute("section_grades", null);
             request.setAttribute("course_name", null);
+            request.setAttribute("statistics", null);
         }
         List<Section> sections = enrollmentService.getInstructorSections(instructor_id);
 
@@ -56,7 +58,7 @@ public class SectionGradesServlet extends HttpServlet {
         request.setAttribute("instructor_id", instructor_id);
         request.setAttribute("instructor_name", instructorName);
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/instructor_grades_view.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/statistical_info_view.jsp");
         dispatcher.forward(request, response);
     }
 }

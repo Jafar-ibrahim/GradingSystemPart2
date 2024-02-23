@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class StudentDAO {
 
@@ -31,9 +32,12 @@ public class StudentDAO {
         return database.updateRecord(TABLE_NAME,"user_id",newUserId,studentId);
     }
 
+    public static boolean studentExists(int studentId){
+        return database.recordExists("student",studentId);
+    }
 
     public static void checkStudentExists( int studentId) throws UserNotFoundException {
-        if(!database.recordExists("student",studentId))
+        if(!studentExists(studentId))
             throw new UserNotFoundException();
     }
 
@@ -85,5 +89,8 @@ public class StudentDAO {
         }
     }
 
+    public List<String> getColumnsNames(){
+        return database.getTableColumnsNames(TABLE_NAME);
+    }
 
 }

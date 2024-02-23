@@ -8,6 +8,7 @@ import com.example.gradingsystempart2.Model.Section;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 public class SectionService {
     private final SectionDAO sectionDAO;
@@ -16,29 +17,28 @@ public class SectionService {
         sectionDAO = new SectionDAO();
     }
 
-    public String addSection(int courseId){
-        try{
+    public boolean addSection(int courseId) {
+        try {
             CourseDAO.checkCourseExists(courseId);
-            sectionDAO.insertSection(courseId);
-            return "Section added successfully";
-        }catch (SQLException e){
+            return sectionDAO.insertSection(courseId);
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-            return "Section addition failed";}
-    }
-
-    public String deleteSection(int sectionId){
-        try{
-            SectionDAO.checkSectionExists(sectionId);
-            sectionDAO.deleteSection(sectionId);
-            return "Section deleted successfully";
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return "Section deletion failed";
+            return false;
         }
     }
-    public boolean updateCourseId(int sectionId, int newCourseId ){
+
+    public boolean deleteSection(int sectionId){
+        try{
+            SectionDAO.checkSectionExists(sectionId);
+            return sectionDAO.deleteSection(sectionId);
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean updateCourseId(int sectionId,int newCourseId){
         return sectionDAO.updateCourseId(newCourseId,sectionId);
     }
 
@@ -49,6 +49,16 @@ public class SectionService {
             e.printStackTrace();
             throw new RuntimeException();
         }
+    }
+    public static boolean sectionExists(int sectionId){
+        return SectionDAO.sectionExists(sectionId);
+    }
+
+    public static void checkSectionExists(int sectionId) throws SectionNotFoundException {
+        SectionDAO.checkSectionExists(sectionId);
+    }
+    public List<String> getColumnsNames(){
+        return sectionDAO.getColumnsNames();
     }
 
 }

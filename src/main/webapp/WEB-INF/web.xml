@@ -3,4 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
+    <filter>
+        <filter-name>ResourcesFilter</filter-name>
+        <filter-class>com.example.gradingsystempart2.Filter.ResourcesFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ResourcesFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+        <url-pattern>/instructor/*</url-pattern>
+        <url-pattern>/student/*</url-pattern>
+    </filter-mapping>
+
 </web-app>

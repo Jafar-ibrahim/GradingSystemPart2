@@ -16,6 +16,7 @@ public class StudentSectionDAO {
 
     private static final Database database = Database.getInstance();
     private final SectionDAO sectionDAO = new SectionDAO();
+    private final GradeDAO gradeDAO = new GradeDAO();
     private static final String TABLE_NAME = "student_section";
 
 
@@ -24,7 +25,8 @@ public class StudentSectionDAO {
     }
 
     public boolean deleteStudentSection(int studentId, int sectionId) throws SQLException {
-        return database.deleteRecord(TABLE_NAME,studentId,sectionId);
+        return database.deleteRecord(TABLE_NAME,studentId,sectionId) &&
+                gradeDAO.deleteStudentGradesFromSection(studentId ,sectionId);
     }
 
     public static boolean StudentSectionExists( int studentId, int sectionId){
@@ -57,6 +59,9 @@ public class StudentSectionDAO {
             }
             return studentIds;
         }
+    }
+    public List<String> getColumnsNames(){
+        return database.getTableColumnsNames(TABLE_NAME);
     }
 
 }

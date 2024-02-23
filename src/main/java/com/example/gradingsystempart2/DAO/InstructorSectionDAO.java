@@ -47,4 +47,7 @@ public class InstructorSectionDAO {
         return sectionsList;
     }
 
+    public List<String> getColumnsNames(){
+        return database.getTableColumnsNames(TABLE_NAME);
+    }
 }

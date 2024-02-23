@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 
 public class AdminDAO {
@@ -44,4 +45,7 @@ public class AdminDAO {
         return adminId;
     }
 
+    public List<String> getColumnsNames(){
+        return database.getTableColumnsNames(TABLE_NAME);
+    }
 }

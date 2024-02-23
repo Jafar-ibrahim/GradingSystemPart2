@@ -1,13 +1,19 @@
 package com.example.gradingsystempart2.Service;
 
+import Util.PasswordAuthenticator;
 import com.example.gradingsystempart2.DAO.*;
 import com.example.gradingsystempart2.Exceptions.SectionNotFoundException;
+import com.example.gradingsystempart2.Exceptions.UserNotFoundException;
 import com.example.gradingsystempart2.Model.Role;
 import com.example.gradingsystempart2.Model.UserDTO;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public class UserService {
 
@@ -35,64 +41,75 @@ public class UserService {
         }
 
     }
-    public String addStudent( String username, String password,
-                                   String firstName, String lastName) {
+    public boolean addStudent( String username, String password, String firstName, String lastName){
         try {
             int userId = userDAO.insertUser(username, password, firstName, lastName,3);
-            studentDAO.insertStudent(userId);
-            return "Student added successfully.";
+            return studentDAO.insertStudent(userId);
         }catch (SQLException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
-            return "Student addition failed.";
+            return false;
         }
     }
+    public static boolean userExists(int userId){
+        return UserDAO.userExists(userId);
+    }
+    public static boolean studentExists(int studentId){
+        return StudentDAO.studentExists(studentId);
+    }
+    public static boolean instructorExists(int instructorId){
+        return InstructorDAO.instructorExists(instructorId);
+    }
+    public static void checkUserExists(int userId) throws SQLException {
+        UserDAO.checkUserExists(userId);
+    }
+    
 
-    public String addInstructor( String username, String password, String firstName, String lastName) {
+    public boolean addInstructor( String username, String password, String firstName, String lastName) {
         try {
             int userId = userDAO.insertUser(username, password, firstName, lastName,2);
-            instructorDAO.insertInstructor(userId);
-            return "Instructor added successfully.";
+            return instructorDAO.insertInstructor(userId);
         }catch (SQLException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
-            return "Instructor addition failed.";
+            return false;
         }
     }
-    public String deleteAdmin(int adminId) {
+    public boolean deleteAdmin(int adminId) {
         try {
-            adminDAO.deleteAdmin(adminId);
-            userDAO.deleteUser(adminId);
-            return "Admin deleted successfully.";
+            return adminDAO.deleteAdmin(adminId);
         }catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-            return "Admin deleted failed.";
+            return false;
         }
     }
-    public String deleteInstructor(int instructorId) {
+    public boolean deleteUser(int userId) {
         try {
-            instructorDAO.deleteInstructor(instructorId);
-            userDAO.deleteUser(instructorId);
-            return "Instructor deleted successfully.";
+            return userDAO.deleteUser(userId);
         }catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-            return "Instructor deleted failed.";
+            return false;
         }
 
     }
-    public String deleteStudent(int studentId) {
+    public boolean deleteInstructor(int instructorId) {
         try {
-            studentDAO.deleteStudent( studentId);
-            userDAO.deleteUser(studentId);
-            return "Student deleted successfully.";
+            return instructorDAO.deleteInstructor(instructorId);
         }catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-            return "Student deleted failed.";
+            return false;
         }
 
+    }
+    public boolean deleteStudent(int studentId) {
+        try {
+            return studentDAO.deleteStudent( studentId);
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
     public boolean updateStudentUserId(int studentId, int newUserId ){
         return studentDAO.updateUserId(studentId,newUserId);
@@ -102,13 +119,13 @@ public class UserService {
     }
 
     public int authenticateUser(String username, String password) {
-        try {
-            return userDAO.authenticateUser(username,password);
-        }catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+        int userId = getIdByUsername(username);
+        if(userId == -1) return -1;
+        String hashedPassword = getPassword(userId);
+        if(PasswordAuthenticator.verifyPassword(password,hashedPassword))
+            return userId;
+        else
             return -1;
-        }
     }
 
     public int getUserRole(int userId){
@@ -119,6 +136,14 @@ public class UserService {
             e.printStackTrace();
         }
         return -1;
+    }
+    public String getPassword(int userId){
+        try{
+            return userDAO.getPassword(userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new NoSuchElementException();
+        }
     }
     public String getUserFullName(int userId){
         try {
@@ -146,6 +171,23 @@ public class UserService {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    public int getIdByUsername(String username){
+        try {
+            return userDAO.getIdByUsername(username);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<String> getUserColumnsNames(){
+        return userDAO.getColumnsNames();
+    }
+    public List<String> getStudentColumnsNames(){
+        return studentDAO.getColumnsNames();
+    }
+    public List<String> getInstructorColumnsNames(){
+        return instructorDAO.getColumnsNames();
     }
 
 }

@@ -60,11 +60,41 @@
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
+        .logout-button,
+        .back-link{
+            position: absolute;
+            background-color: #428bca;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 20px;
+            text-decoration:none
+        }
+        .logout-button:hover {
+            background-color: #cc0000;
+        }
+        .logout-button{
+            top: 25px;
+            left: 25px;
+        }
+        .back-link {
+            top: 25px;
+            right: 25px;
+        }
+        .back-link:hover {
+            background-color: #cccc00;
+        }
     </style>
 </head>
 
 <body>
 <div class="container">
+    <form action="${pageContext.request.contextPath}/logout" method="post">
+        <button type="submit" class="logout-button">Logout</button>
+    </form>
     <h2>Instructor ${instructor_name}'s Courses</h2>
     <table>
         <thead>

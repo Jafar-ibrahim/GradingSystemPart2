@@ -13,12 +13,12 @@
         }
 
         body {
-            background-color: #f4f4f4;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            background: #e0e6f6 linear-gradient(to right, #e0e6f6, #d6e2ef);
         }
 
 
@@ -105,10 +105,30 @@
                 margin-bottom: 20px;
             }
         }
+    .logout-button {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            background-color: #428bca;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 20px;
+            text-decoration:none
+        }
+        .logout-button:hover {
+            background-color: #cc0000;
+        }
     </style>
 </head>
 <body>
 <h1>Admin Dashboard</h1>
+<form action="${pageContext.request.contextPath}/logout" method="post">
+    <button type="submit" class="logout-button">Logout</button>
+</form>
 <div style="text-align: center; margin-top: 20px;">
     <h2>Welcome, Admin  <strong>${user_fullName}</strong> </h2>
 </div>
@@ -116,7 +136,7 @@
     <div class="card small">
         <h4>Manage Courses</h4>
         <p>Perform crud operations on the courses .</p>
-        <form action="${pageContext.request.contextPath}/admin_crud" method="GET">
+        <form action="${pageContext.request.contextPath}/admin/crud" method="GET">
             <input type="hidden" name="user_id" value="${user_id}">
             <input type="hidden" name="admin_id" value="${admin_id}">
             <input type="hidden" name="table" value="course">
@@ -128,7 +148,7 @@
     <div class="card small">
         <h4>Manage Sections</h4>
         <p>Perform crud operations on the sections .</p>
-        <form action="${pageContext.request.contextPath}/admin_crud" method="GET">
+        <form action="${pageContext.request.contextPath}/admin/crud" method="GET">
             <input type="hidden" name="user_id" value="${user_id}">
             <input type="hidden" name="admin_id" value="${admin_id}">
             <input type="hidden" name="table" value="section">
@@ -140,7 +160,7 @@
     <div class="card small">
         <h4>Manage Users</h4>
         <p>Perform crud operations on the users(students & instructors).</p>
-        <form action="${pageContext.request.contextPath}/admin_crud" method="GET">
+        <form action="${pageContext.request.contextPath}/admin/crud" method="GET">
             <input type="hidden" name="user_id" value="${user_id}">
             <input type="hidden" name="admin_id" value="${admin_id}">
             <input type="hidden" name="table" value="user">
@@ -152,7 +172,7 @@
     <div class="card">
         <h4>Manage Instructor Sections</h4>
         <p>Assign/Remove instructors to/from sections  .</p>
-        <form action="${pageContext.request.contextPath}/admin_crud" method="GET">
+        <form action="${pageContext.request.contextPath}/admin/crud" method="GET">
             <input type="hidden" name="user_id" value="${user_id}">
             <input type="hidden" name="admin_id" value="${admin_id}">
             <input type="hidden" name="table" value="instructor_section">
@@ -164,7 +184,7 @@
     <div class="card small">
         <h4>Manage Student Sections</h4>
         <p>Add/Remove students to/from sections.</p>
-        <form action="${pageContext.request.contextPath}/admin_crud" method="GET">
+        <form action="${pageContext.request.contextPath}/admin/crud" method="GET">
             <input type="hidden" name="user_id" value="${user_id}">
             <input type="hidden" name="admin_id" value="${admin_id}">
             <input type="hidden" name="table" value="student_section">

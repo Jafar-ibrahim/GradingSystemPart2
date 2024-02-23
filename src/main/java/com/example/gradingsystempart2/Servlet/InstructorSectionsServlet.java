@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/InstructorSections")
+@WebServlet("/instructor/sections")
 public class InstructorSectionsServlet extends HttpServlet {
     UserService userService = new UserService();
     EnrollmentService enrollmentService = new EnrollmentService();
@@ -33,8 +33,7 @@ public class InstructorSectionsServlet extends HttpServlet {
         request.setAttribute("instructor_name", instructorName);
 
 
-        // Forward the request to the JSP
-        RequestDispatcher dispatcher = request.getRequestDispatcher("views/instructorSections.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/instructorSections.jsp");
         dispatcher.forward(request, response);
     }
 }

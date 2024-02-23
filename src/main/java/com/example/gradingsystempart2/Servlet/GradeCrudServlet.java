@@ -1,20 +1,11 @@
 package com.example.gradingsystempart2.Servlet;
 
 import com.example.gradingsystempart2.DAO.GradeDAO;
-import com.example.gradingsystempart2.DAO.SectionDAO;
 import com.example.gradingsystempart2.DAO.StudentDAO;
 import com.example.gradingsystempart2.Exceptions.DuplicateRecordException;
-import com.example.gradingsystempart2.Exceptions.SectionNotFoundException;
 import com.example.gradingsystempart2.Exceptions.UserNotFoundException;
-import com.example.gradingsystempart2.Model.Grade;
-import com.example.gradingsystempart2.Model.Instructor;
-import com.example.gradingsystempart2.Model.Section;
-import com.example.gradingsystempart2.Model.UserDTO;
 import com.example.gradingsystempart2.Service.EnrollmentService;
 import com.example.gradingsystempart2.Service.GradeService;
-import com.example.gradingsystempart2.Service.SectionService;
-import com.example.gradingsystempart2.Service.UserService;
-import javafx.util.Pair;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -23,10 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 
-@WebServlet("/grades_crud")
+@WebServlet("/instructor/crud/grades")
 public class GradeCrudServlet extends HttpServlet {
     GradeService gradeService = new GradeService();
     EnrollmentService enrollmentService = new EnrollmentService();
@@ -52,7 +42,7 @@ public class GradeCrudServlet extends HttpServlet {
         }else {
             request.setAttribute("error", "Please choose a section and view it before modifying");
 
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/section_grades");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/instructor/crud/section_grades");
             dispatcher.forward(request, response);
         }
     }
@@ -64,7 +54,7 @@ public class GradeCrudServlet extends HttpServlet {
         try {
             StudentDAO.checkStudentExists(student_id);
             GradeDAO.checkGradeExists(student_id,section_id);
-            if(!enrollmentService.studentIsInSection(student_id,section_id)){
+            if(!enrollmentService.studentSectionExists(student_id,section_id)){
                 request.setAttribute("error", "Student is not enrolled in this section");
             } else if (grade < 0 || grade > 100) {
                 request.setAttribute("error", "Grade must be 0-100");
@@ -79,7 +69,7 @@ public class GradeCrudServlet extends HttpServlet {
         }
 
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/section_grades");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/instructor/crud/section_grades");
         dispatcher.forward(request, response);
 
     }
@@ -103,7 +93,7 @@ public class GradeCrudServlet extends HttpServlet {
         }
 
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/section_grades");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/instructor/crud/section_grades");
         dispatcher.forward(request, response);
 
     }
@@ -124,7 +114,7 @@ public class GradeCrudServlet extends HttpServlet {
         }
 
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/section_grades");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/instructor/crud/section_grades");
         dispatcher.forward(request, response);
 
     }

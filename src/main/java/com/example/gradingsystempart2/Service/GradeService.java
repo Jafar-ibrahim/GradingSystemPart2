@@ -2,6 +2,7 @@ package com.example.gradingsystempart2.Service;
 
 import com.example.gradingsystempart2.DAO.*;
 import com.example.gradingsystempart2.Database.Database;
+import com.example.gradingsystempart2.Exceptions.DuplicateRecordException;
 import com.example.gradingsystempart2.Model.Grade;
 import javafx.util.Pair;
 
@@ -9,6 +10,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -84,8 +86,6 @@ public class GradeService {
 
     }
 
-
-
     public List<Grade> getSectionGrades(int sectionId) {
         try {
             return gradeDAO.getGradesBySectionId(sectionId);
@@ -96,6 +96,56 @@ public class GradeService {
         }
 
     }
+    public double getMinGradeForSection(int sectionId) {
+        List<Grade> sectionGrades = getSectionGrades(sectionId);
+        if (sectionGrades.isEmpty()) {
+            return 0;
+        }
+        return sectionGrades.stream().mapToDouble(Grade::getGrade).min().orElse(0);
+    }
+
+    public double getMaxGradeForSection(int sectionId) {
+        List<Grade> sectionGrades = getSectionGrades(sectionId);
+        if (sectionGrades.isEmpty()) {
+            return 0;
+        }
+        return sectionGrades.stream().mapToDouble(Grade::getGrade).max().orElse(0);
+    }
+
+    public double getAverageGradeForSection(int sectionId) {
+        List<Grade> sectionGrades = getSectionGrades(sectionId);
+        if (sectionGrades.isEmpty()) {
+            return 0;
+        }
+        return sectionGrades.stream().mapToDouble(Grade::getGrade).average().orElse(0);
+    }
+    public double getMedianGradeForSection(int sectionId) {
+        List<Grade> sectionGrades = getSectionGrades(sectionId);
+
+        if (sectionGrades.isEmpty()) {
+            return 0;
+        }
+        sectionGrades.sort(Comparator.comparingDouble(Grade::getGrade));
+
+        int size = sectionGrades.size();
+        if (size % 2 == 0) {
+            double mid1 = sectionGrades.get(size / 2 - 1).getGrade();
+            double mid2 = sectionGrades.get(size / 2).getGrade();
+            return (mid1 + mid2) / 2;
+        } else {
+            return sectionGrades.get(size / 2).getGrade();
+        }
+    }
+    public static boolean gradeExists(int studentId , int sectionId){
+        return GradeDAO.gradeExists(studentId,sectionId);
+    }
+    public static void checkGradeExists(int studentId , int sectionId) throws DuplicateRecordException {
+        GradeDAO.checkGradeExists(studentId,sectionId);
+    }
+    public List<String> getColumnsNames(){
+        return gradeDAO.getColumnsNames();
+    }
+
 
 
 }

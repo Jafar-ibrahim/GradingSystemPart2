@@ -6,15 +6,12 @@ import com.example.gradingsystempart2.Model.Grade;
 import com.example.gradingsystempart2.Model.Section;
 import javafx.util.Pair;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GradeDAO {
 
@@ -134,5 +131,11 @@ public class GradeDAO {
     public static void checkGradeExists(int studentId , int sectionId) throws DuplicateRecordException{
         if(gradeExists(studentId,sectionId))
             throw new DuplicateRecordException();
+    }
+    public List<String> getColumnsNames(){
+        return database.getTableColumnsNames(TABLE_NAME);
+    }
+    public boolean deleteStudentGradesFromSection(int studentId , int sectionId){
+        return database.deleteRecordNotPrimaryKey("grade","student_id","section_id",studentId,sectionId);
     }
 }

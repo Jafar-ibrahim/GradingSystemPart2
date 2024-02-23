@@ -1,11 +1,14 @@
 package com.example.gradingsystempart2.DAO;
 
+import Util.PasswordAuthenticator;
 import com.example.gradingsystempart2.Database.Database;
 import com.example.gradingsystempart2.Exceptions.*;
 import com.example.gradingsystempart2.Model.*;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public class UserDAO {
 
@@ -16,7 +19,7 @@ public class UserDAO {
 
     public int insertUser(String username, String password,
                                   String firstName, String lastName, int roleId) throws SQLException {
-        if(database.insertRecord(TABLE_NAME,username,password,firstName,lastName,roleId))
+        if(database.insertRecord(TABLE_NAME,username, PasswordAuthenticator.hashPassword(password),firstName,lastName,roleId))
             return getIdByUsername(username);
 
         return -1;
@@ -30,12 +33,23 @@ public class UserDAO {
         }
         return -1;
     }
+    public String getPassword(int userId) throws SQLException {
+        try(ResultSet resultSet =  database.readRecord(TABLE_NAME,userId)) {
+          if (resultSet.next()){
+              return resultSet.getString("password");
+          }
+          throw new NoSuchElementException();
+        }
+    }
     public boolean deleteUser(int userId) throws SQLException {
         return database.deleteRecord(TABLE_NAME,userId);
     }
 
-    public static void checkUserExists(Connection connection, int userId) throws SQLException {
-        if(!database.recordExists(TABLE_NAME,userId))
+    public static boolean userExists(int userId){
+        return database.recordExists(TABLE_NAME,userId);
+    }
+    public static void checkUserExists(int userId) throws SQLException {
+        if(!userExists(userId))
             throw new UserNotFoundException();
     }
 
@@ -78,7 +92,7 @@ public class UserDAO {
         }
         return roleId;
     }
-    public int authenticateUser(String username, String password) throws SQLException {
+    /*public int authenticateUser(String username, String password) throws SQLException {
         String sql = "SELECT user_id FROM user WHERE username = ? AND password = ?";
 
         try (Connection connection = database.getDatabaseConnection();
@@ -98,12 +112,11 @@ public class UserDAO {
             }
 
         }
-    }
+    }*/
 
     public UserDTO getById(int userId) throws SQLException {
         try(ResultSet resultSet = database.readRecord(TABLE_NAME,userId)){
             if(resultSet.next()) {
-                System.out.println("inside");
                 String username = resultSet.getString("username");
                 String firstName = resultSet.getString("first_name");
                 String lastName = resultSet.getString("last_name");
@@ -112,5 +125,9 @@ public class UserDAO {
             }
             throw new UserNotFoundException();
         }
+    }
+
+    public List<String> getColumnsNames(){
+        return database.getTableColumnsNames(TABLE_NAME);
     }
 }

@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class InstructorDAO {
 
@@ -47,9 +48,11 @@ public class InstructorDAO {
     public boolean updateUserId(int instructorId, int newUserId ){
         return database.updateRecord(TABLE_NAME,"user_id",newUserId,instructorId);
     }
-
+    public static boolean instructorExists(int instructorId){
+        return database.recordExists("instructor",instructorId);
+    }
     public static void checkInstructorExists(int instructorId) throws UserNotFoundException {
-        if(!database.recordExists("instructor",instructorId))
+        if(!instructorExists(instructorId))
             throw new UserNotFoundException();
     }
     public int getInstructorId(int userId) throws SQLException {
@@ -71,4 +74,7 @@ public class InstructorDAO {
         return instructorId;
     }
 
+    public List<String> getColumnsNames(){
+        return database.getTableColumnsNames(TABLE_NAME);
+    }
 }

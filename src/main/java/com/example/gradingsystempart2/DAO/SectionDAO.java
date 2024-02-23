@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class SectionDAO {
 
@@ -30,9 +31,12 @@ public class SectionDAO {
     public boolean updateCourseId(int sectionId, int newCourseId ){
         return database.updateRecord(TABLE_NAME,"course_id",newCourseId,sectionId);
     }
+    public static boolean sectionExists(int sectionId){
+        return database.recordExists(TABLE_NAME,sectionId);
+    }
 
     public static void checkSectionExists(int sectionId) throws SectionNotFoundException {
-        if(!database.recordExists(TABLE_NAME,sectionId))
+        if(!sectionExists(sectionId))
             throw new SectionNotFoundException();
     }
     public Section getById(int sectionId) throws SQLException {
@@ -46,5 +50,7 @@ public class SectionDAO {
         }
     }
 
-
+    public List<String> getColumnsNames(){
+        return database.getTableColumnsNames(TABLE_NAME);
+    }
 }

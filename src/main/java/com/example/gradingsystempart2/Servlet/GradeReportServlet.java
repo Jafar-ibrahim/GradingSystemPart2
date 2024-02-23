@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/gradeReport")
+@WebServlet("/student/grade_report")
 public class GradeReportServlet extends HttpServlet {
     UserService userService = new UserService();
     GradeService gradeService = new GradeService();
@@ -35,7 +35,7 @@ public class GradeReportServlet extends HttpServlet {
         request.setAttribute("student_average", studentAverage);
 
         // Forward the request to the JSP
-        RequestDispatcher dispatcher = request.getRequestDispatcher("views/GradeReport.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/GradeReport.jsp");
         dispatcher.forward(request, response);
     }
 }

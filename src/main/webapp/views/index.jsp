@@ -14,8 +14,7 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-color: #e0e6f6;
-    background-gradient(linear-gradient(to right, #e0e6f6, #d6e2ef));
+      background: #e0e6f6 linear-gradient(to right, #e0e6f6, #d6e2ef);
     }
 
     .container {
@@ -84,7 +83,7 @@
         width: 90%;
       }
     }
-  </style>
+    </style>
 </head>
 
 <body>

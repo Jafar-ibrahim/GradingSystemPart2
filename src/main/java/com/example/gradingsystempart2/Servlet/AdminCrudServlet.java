@@ -22,12 +22,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-@WebServlet("/admin_crud")
+@WebServlet("/admin/crud")
 public class AdminCrudServlet extends HttpServlet {
     Database db = Database.getInstance();
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String table = request.getParameter("table");
-        List<String> columns = db.getTableColumnNames(table);
+        List<String> columns = db.getTableColumnsNames(table);
         List<String[]> content = db.getTableContent(table);
         request.setAttribute("columns",columns);
         request.setAttribute("content",content);
@@ -35,8 +35,7 @@ public class AdminCrudServlet extends HttpServlet {
         request.setAttribute("tableCapitalized",table.substring(0, 1).toUpperCase() + table.substring(1));
 
 
-        // Forward the request to the JSP
-        RequestDispatcher dispatcher = request.getRequestDispatcher("views/admin_crud_view.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/admin_crud_view.jsp");
         dispatcher.forward(request, response);
     }
 
@@ -52,26 +51,20 @@ public class AdminCrudServlet extends HttpServlet {
 
         switch (table) {
             case "course":
-                dispatcher = newRequest.getRequestDispatcher("/course_crud");
-                break;
-            case "section":
-                dispatcher = newRequest.getRequestDispatcher("/section_crud");
-                break;
-            case "instructor":
-                dispatcher = newRequest.getRequestDispatcher("/instructor_crud");
+                dispatcher = newRequest.getRequestDispatcher("/admin/crud/course");
                 break;
             case "student":
                 dispatcher = newRequest.getRequestDispatcher("/student_crud");
                 break;
             case "user":
-                dispatcher = newRequest.getRequestDispatcher("/user_crud");
+                dispatcher = newRequest.getRequestDispatcher("/admin/crud/user");
                 break;
             case "student_section":
-                dispatcher = newRequest.getRequestDispatcher("/student_section_crud");
+                dispatcher = newRequest.getRequestDispatcher("/admin/crud/student_section");
                 break;
             default:
                 /*"instructor_section"*/
-                dispatcher = newRequest.getRequestDispatcher("/instructor_section_crud");
+                dispatcher = newRequest.getRequestDispatcher("/admin/crud/instructor_section");
                 break;
         }
         dispatcher.forward(newRequest, response);

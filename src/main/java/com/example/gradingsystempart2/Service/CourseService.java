@@ -6,6 +6,7 @@ import com.example.gradingsystempart2.Exceptions.CourseNotFoundException;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.List;
 
 public class CourseService {
 
@@ -27,6 +28,12 @@ public class CourseService {
         CourseDAO.checkCourseExists(courseId);
         return courseDAO.updateCourseName(courseId,name);
     }
+    public static boolean courseExists(int courseId){
+        return CourseDAO.courseExists(courseId);
+    }
+    public static void checkCourseExists(int courseId) throws CourseNotFoundException {
+        CourseDAO.checkCourseExists(courseId);
+    }
     public String getCourseName(int courseId){
         try{
             CourseDAO.checkCourseExists(courseId);
@@ -36,5 +43,8 @@ public class CourseService {
             e.printStackTrace();
         }
         return null;
+    }
+    public List<String> getColumnsNames(){
+        return courseDAO.getColumnsNames();
     }
 }

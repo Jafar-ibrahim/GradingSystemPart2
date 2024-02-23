@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class RoleDAO {
@@ -31,6 +32,9 @@ public class RoleDAO {
         if(roleId -1 <= Role.values().length)
             return Role.values()[roleId-1];
         throw new IllegalArgumentException();
+    }
+    public List<String> getColumnsNames(){
+        return database.getTableColumnsNames(TABLE_NAME);
     }
 
 }

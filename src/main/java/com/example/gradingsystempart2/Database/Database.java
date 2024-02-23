@@ -26,7 +26,7 @@ public class Database {
             instance = new Database();
         return instance;
     }
-    public static DataSource getDataSource(){
+    private static DataSource getDataSource(){
         try {
             MysqlDataSource ds = new MysqlDataSource();
             ds.setServerName(SERVER_NAME);
@@ -51,7 +51,7 @@ public class Database {
             throw new SQLException("Couldn't establish connection", e);
         }
     }
-    private int executeUpdate(String query, int... params) throws SQLException {
+    private synchronized int executeUpdate(String query, int... params) throws SQLException {
         try (Connection connection = getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             for (int i = 0; i < params.length; i++) {
@@ -60,7 +60,7 @@ public class Database {
             return preparedStatement.executeUpdate();
         }
     }
-    private int executeUpdate(String query, Object... params) throws SQLException {
+    private synchronized int executeUpdate(String query, Object... params) throws SQLException {
         try (Connection connection = getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             for (int i = 0; i < params.length; i++) {
@@ -70,7 +70,7 @@ public class Database {
         }
     }
 
-    public ResultSet executeQuery(String query, int... params) throws SQLException {
+    public synchronized ResultSet executeQuery(String query, int... params) throws SQLException {
         Connection connection = getDatabaseConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         for (int i = 0; i < params.length; i++) {
@@ -79,8 +79,8 @@ public class Database {
         return preparedStatement.executeQuery();
     }
 
-    public List<String> getTableColumnNames(String tableName) {
-        List<String> columnNames = new ArrayList<>();
+    public List<String> getTableColumnsNames(String tableName) {
+        List<String> columnsNames = new ArrayList<>();
 
         try (Connection connection = getDatabaseConnection()) {
             String query = "SELECT COLUMN_NAME " +
@@ -94,7 +94,7 @@ public class Database {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     while (resultSet.next()) {
                         String columnName = resultSet.getString("COLUMN_NAME");
-                        columnNames.add(columnName);
+                        columnsNames.add(columnName);
                     }
                 }
             }
@@ -102,12 +102,12 @@ public class Database {
             e.printStackTrace(); // Handle the exception according to your application's needs
         }
 
-        return columnNames;
+        return columnsNames;
     }
     public List<String[]> getTableContent(String tableName) {
         String query = "SELECT * FROM " + tableName;
         List<String[]> tableContent = new ArrayList<>();
-        List<String> columns = getTableColumnNames(tableName);
+        List<String> columns = getTableColumnsNames(tableName);
         try (ResultSet resultSet = executeQuery(query)) {
             while (resultSet.next()) {
                 String[] row = new String[columns.size()];
@@ -122,16 +122,18 @@ public class Database {
         return tableContent;
     }
 
-    public boolean insertRecord(String tableName, Object... inputData) {
+    public synchronized boolean insertRecord(String tableName, Object... inputData) {
         StringJoiner columns = new StringJoiner(", ");
         StringJoiner placeholder = new StringJoiner(", ");
-        List<String> columnNames = getTableColumnNames(tableName);
-        // primary keys are not an input , they are auto generated
+        List<String> columnsNames = getTableColumnsNames(tableName);
+        // primary keys are not an input , they are auto generated ( except for these)
         if(!(tableName.equals("student_section")
-                || tableName.equals("instructor_section") || tableName.equals("grade"))){
-            columnNames.remove(0);
+                || tableName.equals("instructor_section")
+                || tableName.equals("grade")
+                || tableName.equals("role"))){
+            columnsNames.remove(0);
         }
-        for (String field : columnNames) {
+        for (String field : columnsNames) {
             columns.add(field);
             placeholder.add("?");
         }
@@ -145,10 +147,10 @@ public class Database {
         return false;
     }
 
-    public boolean updateRecord(String tableName, String columnToUpdate,
+    public synchronized boolean updateRecord(String tableName, String columnToUpdate,
                                 Object newValue,int... pk) {
         System.out.println(columnToUpdate);
-        List<String> columns = getTableColumnNames(tableName);
+        List<String> columns = getTableColumnsNames(tableName);
         String newValueString = String.valueOf(newValue);
         String query = "UPDATE " + tableName + " SET " + columnToUpdate + " = '" +newValueString+ "' WHERE " + columns.get(0) + " = ?";
         if (pk.length == 2)
@@ -162,8 +164,8 @@ public class Database {
         return false;
     }
 
-    public boolean deleteRecord(String tableName, int... idToDelete) {
-        List<String> columns = getTableColumnNames(tableName);
+    public synchronized boolean deleteRecord(String tableName, int... idToDelete) {
+        List<String> columns = getTableColumnsNames(tableName);
         String primaryKeyColumn = columns.get(0);
         String deleteSQL = "DELETE FROM " + tableName + " WHERE " + primaryKeyColumn + " = ?";
         if (idToDelete.length == 2)
@@ -176,8 +178,18 @@ public class Database {
             return false;
         }
     }
+    public synchronized boolean deleteRecordNotPrimaryKey(String tableName,String column1,String column2,int... value) {
+        String deleteSQL = "DELETE FROM " + tableName + " WHERE " + column1 + " = ? AND "+column2+" = ?";
+        try {
+            int rowsDeleted = executeUpdate(deleteSQL,value);
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     public ResultSet readRecord(String tableName, int... idToRead){
-        List<String> columns = getTableColumnNames(tableName);
+        List<String> columns = getTableColumnsNames(tableName);
         String primaryKeyColumn = columns.get(0);
         String readSQL = "SELECT * FROM " + tableName + " WHERE " + primaryKeyColumn + " = ?";
         if (idToRead.length == 2)
@@ -216,7 +228,8 @@ public class Database {
                 return "SELECT instructor_id FROM " + tableName + " WHERE instructor_id = ?";
             case "course":
                 return "SELECT course_id FROM " + tableName + " WHERE course_id = ?";
-
+            case "user":
+                return "SELECT user_id FROM " + tableName + " WHERE user_id = ?";
             default:
                 throw new IllegalArgumentException();
         }

@@ -14,8 +14,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #e0e6f6;
-            background: linear-gradient(to right, #e0e6f6, #d6e2ef);
+            background: #e0e6f6 linear-gradient(to right, #e0e6f6, #d6e2ef);
         }
 
         .container {
@@ -60,11 +59,41 @@
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
+        .logout-button,
+        .back-link{
+            position: absolute;
+            background-color: #428bca;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 20px;
+            text-decoration:none
+        }
+        .logout-button:hover {
+            background-color: #cc0000;
+        }
+        .logout-button{
+            top: 25px;
+            left: 25px;
+        }
+        .back-link {
+            top: 25px;
+            right: 25px;
+        }
+        .back-link:hover {
+            background-color: #cccc00;
+        }
     </style>
 </head>
 
 <body>
 <div class="container">
+    <form action="${pageContext.request.contextPath}/logout" method="post">
+        <button type="submit" class="logout-button">Logout</button>
+    </form>
     <h2>Grade Report for student '${student_name}'</h2>
     <table>
         <thead>
