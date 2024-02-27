@@ -20,10 +20,10 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) throws SQLException {
 
-        /*SchemaManager schemaManager = new SchemaManager();
+        SchemaManager schemaManager = new SchemaManager();
         schemaManager.dropAllTablesIfExist();
         schemaManager.initializeTables();
-        schemaManager.addDummyData();*/
+        schemaManager.addDummyData();
 
 
 

@@ -153,12 +153,12 @@
 </div>
 <div class="card-container">
     <div class="card">
-        <h4>View Grades</h4>
+        <h4>Grade Report</h4>
         <p>View your courses grades , in addition to your and your sections average</p>
         <form action="${pageContext.request.contextPath}/student/grade_report" method="GET">
             <input type="hidden" name="user_id" value="${user_id}">
             <input type="hidden" name="student_id" value="${student_id}">
-            <button type="submit">View Grades</button>
+            <button type="submit">View Report</button>
         </form>
     </div>
     <div class="card">

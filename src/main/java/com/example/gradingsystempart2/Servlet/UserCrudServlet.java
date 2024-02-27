@@ -28,8 +28,7 @@ import java.util.Objects;
 @WebServlet("/admin/crud/user")
 public class UserCrudServlet extends HttpServlet {
    UserService userService = new UserService();
-   Database database = Database.getInstance();
-   
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         if(action.equals("add")){
@@ -46,11 +45,7 @@ public class UserCrudServlet extends HttpServlet {
         String firstName = request.getParameter("first_name");
         String lastName = request.getParameter("last_name");
         String stringRoleId = request.getParameter("role_id");
-        System.out.println(username);
-        System.out.println(password);
-        System.out.println(firstName);
-        System.out.println(lastName);
-        System.out.println(stringRoleId);
+
         if(filled(username) && filled(password) && filled(firstName) && filled(lastName) && filled(stringRoleId)){
             int roleId = Integer.parseInt(stringRoleId);
 
@@ -77,6 +72,7 @@ public class UserCrudServlet extends HttpServlet {
 
     }
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Database database = Database.getInstance();
         List<String> columns = userService.getUserColumnsNames();
         String stringUserId = request.getParameter("user_id");
         if(filled(stringUserId)){

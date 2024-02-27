@@ -65,7 +65,7 @@ public class CourseDAO {
         }
     }
     public Course getById(int courseId) throws SQLException {
-        try(ResultSet resultSet = database.readRecord("course",courseId)){
+        try(ResultSet resultSet = database.readRecord(TABLE_NAME,courseId)){
             if(resultSet.next()) {
                 String name = resultSet.getString("course_name");
                 return new Course(courseId, name);

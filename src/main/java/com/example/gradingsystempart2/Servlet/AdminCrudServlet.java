@@ -53,9 +53,6 @@ public class AdminCrudServlet extends HttpServlet {
             case "course":
                 dispatcher = newRequest.getRequestDispatcher("/admin/crud/course");
                 break;
-            case "student":
-                dispatcher = newRequest.getRequestDispatcher("/student_crud");
-                break;
             case "user":
                 dispatcher = newRequest.getRequestDispatcher("/admin/crud/user");
                 break;

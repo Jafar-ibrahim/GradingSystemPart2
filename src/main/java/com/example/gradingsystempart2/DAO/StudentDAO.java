@@ -80,7 +80,7 @@ public class StudentDAO {
         return null;
     }
     public UserDTO getById(int studentId) throws SQLException {
-        try(ResultSet resultSet = database.readRecord("student",studentId)){
+        try(ResultSet resultSet = database.readRecord(TABLE_NAME,studentId)){
             if(resultSet.next()) {
                 int userId = resultSet.getInt("user_id");
                 return userDAO.getById(userId);

@@ -26,10 +26,10 @@ public class GradeReportServlet extends HttpServlet {
         int studentId = Integer.parseInt(request.getParameter("student_id"));
         UserDTO userDTO = userService.getById(userId);
         String studentName = userDTO.getFirstName()+" "+userDTO.getLastName();
-        // Call the service method to get the grade report
+
         List<Pair<Grade, Double>> gradeReport = gradeService.getGradeReport(studentId);
         double studentAverage = gradeService.getStudentAverage(studentId);
-        // Set the gradeReport as an attribute in the request
+
         request.setAttribute("gradeReport", gradeReport);
         request.setAttribute("student_name", studentName);
         request.setAttribute("student_average", studentAverage);

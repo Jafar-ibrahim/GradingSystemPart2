@@ -37,7 +37,7 @@ public class InstructorSectionDAO {
     }
     public List<Section> getInstructorSections(int instructorId) throws SQLException {
         List<Section> sectionsList = new ArrayList<>();
-        try(ResultSet resultSet = database.readRecord("instructor_section",instructorId)) {
+        try(ResultSet resultSet = database.readRecord(TABLE_NAME,instructorId)) {
             while (resultSet.next()){
                 int section_id = resultSet.getInt("section_id");
                 Section section = sectionDAO.getById(section_id);
